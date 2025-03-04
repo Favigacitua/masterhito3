@@ -1,0 +1,30 @@
+.reseñas-container {
+    display: grid;
+    grid-template-columns: 1fr; 
+    gap: 16px;
+    padding: 20px; 
+   margin: auto;
+   width: 50%;
+   align-items: center;
+  }
+  
+  .reseñas {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; 
+    width: 18rem;  
+}
+
+
+
+  
+  @media (min-width: 700px) {
+    .reseñas-container {
+      grid-template-columns: repeat(2, 1fr); 
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .reseñas-container {
+      grid-template-columns: repeat(4, 1fr); 
+    }
+  }

@@ -1,0 +1,54 @@
+.formulariopublicacion {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    height: auto;
+    margin: auto;
+    padding: 2rem;
+    gap: 2rem;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+}
+
+.botonesperfil {
+    display: flex;   
+    margin: auto;
+}
+
+.imagendeperfil {
+    width: 100vw;
+    height: auto;
+}
+
+.imagendeperfil img {
+    width: 100vw;
+    margin:'auto'
+}
+
+
+.perfilcontainer {
+    width: 100vw;
+    height: auto;
+}
+
+.datos {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
+}
+
+.misexperiencias {
+    margin: auto;
+    padding: 2rem;
+}
+
+.formulariopublicacion input[type="text"]::placeholder,
+.formulariopublicacion input[type="number"]::placeholder,
+.formulariopublicacion textarea::placeholder {
+    color: lightgray !important;
+    font-style: italic !important;
+    opacity: 1 !important;
+}
