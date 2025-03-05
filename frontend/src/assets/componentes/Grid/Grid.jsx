@@ -5,7 +5,7 @@ import './grid.css';
 
 export const Grid = ({ maxItems }) => {
   const { viajes } = useContext(MyContext);  
-  console.log(viajes);
+  console.log("📌 Viajes disponibles en Grid:", viajes);
 
   return (
     <div className='viajes'>

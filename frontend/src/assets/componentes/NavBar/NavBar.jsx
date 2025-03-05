@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -12,6 +12,7 @@ import Home from "../Home/Home";
 export const NavBar = () => {
   const { token, logout } = useUserContext();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleLoginClick = () => {
     console.log("Login Button Clicked");
@@ -91,11 +92,11 @@ export const NavBar = () => {
                         isActive ? "nav-link active-link" : "nav-link"
                       }
                     >
-                      Favoritos // CAMBIO: Cambié el texto a Favoritos
+                      Favoritos 
                     </Nav.Link>
                     <Nav.Link
                       as={NavLink}
-                      to="/profile"
+                      to="/perfil"
                       onClick={handleClose}
                       className={({ isActive }) =>
                         isActive ? "nav-link active-link" : "nav-link"
@@ -112,6 +113,7 @@ export const NavBar = () => {
                       onClick={() => {
                         logout();
                         handleClose();
+                        navigate("/login");
                       }} 
                     >
                       Cerrar sesión
@@ -135,11 +137,10 @@ export const NavBar = () => {
                         backgroundColor: "#0DBCAD",
                         border: "2px solid #0DBCAD",
                       }}
-                      as={NavLink}
-                      to="/login"
                       onClick={() => {
                         handleLoginClick();
                         handleClose();
+                        navigate("/login");
                       }}
                     >
                       Iniciar Sesion

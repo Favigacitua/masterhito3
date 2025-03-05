@@ -4,10 +4,10 @@ import { MyContext } from '../../../Context/Context';
 import './cardreseña.css'
 
 export const CardReseña = ({ viajeId }) => {
-  const { cruceros } = useContext(MyContext); 
+  const { viajes } = useContext(MyContext); 
 
  
-  const crucero = cruceros.find(c => c.id === viajeId);
+  const crucero = viajes.find(c => c.id === viajeId);
   
   if (!crucero) {
     return <p>No se encontraron reseñas para este viaje.</p>;

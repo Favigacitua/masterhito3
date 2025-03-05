@@ -8,12 +8,15 @@ CREATE TABLE usuario (
 
 CREATE TABLE viajes (
     id SERIAL PRIMARY KEY,
-    destino VARCHAR(100) NOT NULL,
-    descripcion TEXT NOT NULL,
-    precio NUMERIC(10, 2) NOT NULL,
-    imagen TEXT NOT NULL,
-    fecha_salida DATE NOT NULL,
-    duracion INT NOT NULL -- Duración en días
+    nombre VARCHAR(255) NOT NULL,
+    destino TEXT[]  NOT NULL, 
+    descripcion TEXT  NOT NULL,
+    precio NUMERIC(10,2)  NOT NULL,
+    imagen VARCHAR(255)  NOT NULL,
+    fecha_salida DATE  NOT NULL,
+    duracion INTEGER  NOT NULL,
+    capacidad INTEGER  NOT NULL,
+    features TEXT[]  NOT NULL
 );
 
 CREATE TABLE favoritos (
@@ -64,13 +67,13 @@ INSERT INTO usuario (nombre, apellido, email, password) VALUES
 ('Ana', 'Torres', 'ana.torres@hotmail.com', 'torres2023'),
 ('Cecilia', 'Torres', 'ceci.torres@hotmail.com', 'ceci2023');
 
-INSERT INTO viajes (destino, descripcion, precio, imagen, fecha_salida, duracion) VALUES
-('Caribe', 'Crucero por las aguas cristalinas del Caribe', 2500.00, 'caribe.jpg', '2025-03-15', 7),
-('Mediterráneo', 'Tour por las costas históricas del Mediterráneo', 3200.00, 'mediterraneo.jpg', '2025-04-10', 10),
-('Alaska', 'Explora los glaciares y la vida silvestre de Alaska', 2800.00, 'alaska.jpg', '2025-05-20', 12),
-('Islas Griegas', 'Disfruta de la belleza de las Islas Griegas', 3000.00, 'griegas.jpg', '2025-06-05', 8),
-('Sudamérica', 'Aventura por los países sudamericanos', 2000.00, 'sudamerica.jpg', '2025-07-15', 14),
-('Sur de Chile', 'Explora la belleza del sur de Chile, desde los colores de Valparaíso hasta los impresionantes fiordos de la Patagonia', 2500.00, 'caribe.jpg', '2025-03-15', 7);
+INSERT INTO viajes (nombre, destino, descripcion, precio, imagen, fecha_salida, duracion, capacidad, features) VALUES
+('Crucero por el Caribe', ARRAY['Bahamas', 'Jamaica', 'Cuba'], 'Un emocionante crucero por el Caribe.', 2500.00, 'caribe.jpg', '2025-03-01', 7, 200, ARRAY['Todo incluido', 'Piscina infinita', 'Shows nocturnos']),
+('Crucero por el Mediterráneo', ARRAY['Italia', 'Grecia', 'España'], 'Descubre las maravillas del Mediterráneo.', 3200.00, 'mediterraneo.jpg', '2025-04-10', 10, 250, ARRAY['Cenas gourmet', 'Spa de lujo', 'Excursiones guiadas']),
+('Crucero por Alaska', ARRAY['Alaska', 'Canadá', 'Groenlandia'], 'Explora los glaciares y la vida silvestre.', 2800.00, 'alaska.jpg', '2025-05-20', 12, 300, ARRAY['Naturaleza', 'Tours en kayak', 'Auroras boreales']),
+('Crucero por las Islas Griegas', ARRAY['Santorini', 'Mykonos', 'Atenas'], 'Un recorrido espectacular por las icónicas islas griegas.', 3000.00, 'islas_griegas.jpg', '2025-06-05', 8, 220, ARRAY['Vistas impresionantes', 'Buceo', 'Cultura e historia']),
+('Crucero por Sudamérica', ARRAY['Colombia', 'Perú', 'Ecuador'], 'Aventura por los países sudamericanos.', 2000.00, 'sudamerica.jpg', '2025-07-15', 14, 250, ARRAY['Cenas gourmet', 'Spa de lujo', 'Festivales', 'Noches de salsa']),
+('Crucero por el Sur de Chile', ARRAY['Valparaíso', 'Chiloé (Castro)', 'Puerto Natales', 'Torres del Paine'], 'Explora la belleza del sur de Chile, desde los colores de Valparaíso hasta los impresionantes fiordos de la Patagonia.', 2700.00, 'sur_chile.jpg', '2025-08-01', 10, 180, ARRAY['Tracking', 'Parques Nacionales', 'Cultura y Gastronomía'])
 
 INSERT INTO favoritos (id_usuario, id_viaje) VALUES
 (1, 2), -- Fernanda: Mediterráneo

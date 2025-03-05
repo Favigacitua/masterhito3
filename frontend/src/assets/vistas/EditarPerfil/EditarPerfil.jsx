@@ -1,15 +1,18 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; 
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import  {UserContext} from "../../../Context/UserContext"; 
+import  {useUserContext} from "../../../Context/UserContext"; 
 import "./editarperfil.css";
 
 export const EditarPerfil = () => {
-  const { token } = useContext(UserContext); 
+  const { token, user, setUser, fetchUserProfile } = useUserContext(); 
+  const navigate = useNavigate(); 
+
   const [formData, setFormData] = useState({
-    nombre: "",
-    apellido: "",
-    email: "",
+    nombre: user?.nombre || "",
+    apellido: user?.apellido || "",
+    email: user?.email || "",
     password: "",
     repetirPassword: "",
     imagen: null,
@@ -41,7 +44,10 @@ export const EditarPerfil = () => {
     }
 
     try {
-      const response = await fetch("https://tu-servidor/api/editar-perfil", {
+      console.log("🔑 Token enviado al backend:", token);
+      console.log("📌 Datos que se envían:", [...formDataToSend.entries()]);
+
+      const response = await fetch("http://localhost:3000/api/perfil", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`, 
@@ -50,10 +56,40 @@ export const EditarPerfil = () => {
       });
 
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error("❌ Error en la respuesta del backend:", errorData);
+        throw new Error(errorData.message || "Error al actualizar el perfil");
+      }
+
+    
+
+      const data = await response.json();  // 🔹 Capturamos la respuesta completa
+      console.log("📌 Respuesta del backend:", data);
+
+      if (!data.user) {
+        throw new Error("❌ La respuesta del backend no contiene `user`");
+      }
+  
+
+      if (!response.ok) {
         throw new Error("Error al actualizar el perfil");
       }
 
+      console.log("📌 Antes de setUser:", user);
+
+      setUser((prevUser) => ({
+        ...prevUser,
+        ...data.user
+      }));
+
+      console.log("📌 Después de setUser:", user);
+
+      await fetchUserProfile();  
+
       alert("Perfil actualizado correctamente");
+
+      navigate("/perfil");
+      
     } catch (error) {
       console.error("Error:", error);
       alert("Hubo un problema al actualizar el perfil");

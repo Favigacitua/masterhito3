@@ -7,44 +7,54 @@ import Button from "react-bootstrap/Button";
 import './destinodetailcard.css';
 
 export const DestinoDetailCard = () => {
-  const { cruceros } = useContext(MyContext);
+  const { viajes } = useContext(MyContext);
   const { id } = useParams();  
   const { addFavoritos } = useContext(UserContext); 
-  const [crucero, setCrucero] = useState(null);
+  const [viaje, setViaje] = useState(null);
+
+  
 
   useEffect(() => {
-    const selectedCrucero = cruceros.find(c => c.id === id);
-    setCrucero(selectedCrucero);
-  }, [id, cruceros]);
 
-  if (!crucero) {
+    console.log("🔍 Buscando viaje con ID:", id);
+    console.log("📌 Lista de viajes disponibles:", viajes);
+    const selectedViaje = viajes.find(v => v.id === Number(id))
+    if (selectedViaje) {
+      console.log("✅ Viaje encontrado:", selectedViaje);
+      setViaje(selectedViaje);
+    } else {
+      console.log("⚠️ No se encontró un viaje con ese ID.");
+    }
+  }, [id, viajes]);
+
+  if (!viaje) {
     return <p>Cargando detalles del crucero...</p>;  
   }
 
   
   const handleAddToFavorites = () => {
-    addFavoritos(crucero.id);  
+    addFavoritos(viaje.id);  
   };
 
   return (
     <div className="destino-detail-card">
-      {crucero?.image ? (
-        <img src={crucero.image} alt={crucero.name} className="destino-detail-image" />
+      {viaje?.image ? (
+        <img src={`http://localhost:3000/uploads/${viaje.imagen}`} alt={viaje.nombre} className="destino-detail-image" />
       ) : (
         <p>No hay imagen disponible</p>
       )}
   
       <div className="destino-detail-info">
-        <h2>{crucero?.name || "Nombre no disponible"}</h2>
-        <p>{crucero?.description || "Descripción no disponible"}</p>
-        <p><strong>Precio por persona:</strong> ${crucero?.pricePerPerson || "Precio no disponible"}</p>
-        <p><strong>Fechas:</strong> {crucero?.departureDate || "Fecha no disponible"} - {crucero?.returnDate || "Fecha no disponible"}</p>
-        <p><strong>Capacidad:</strong> {crucero?.capacity || "Capacidad no disponible"}</p>
+      <h2>{viaje?.nombre || "Nombre no disponible"}</h2>
+        <p>{viaje?.descripcion || "Descripción no disponible"}</p>
+        <p><strong>Precio por persona:</strong> ${viaje?.precio || "Precio no disponible"}</p>
+        <p><strong>Fechas:</strong> {viaje?.fecha_salida || "Fecha no disponible"} - {viaje?.duracion || "Duración no disponible"} días</p>
+        <p><strong>Capacidad:</strong> {viaje?.capacidad || "Capacidad no disponible"}</p>
   
         <p><strong>Destinos:</strong></p>
-        {Array.isArray(crucero?.destinations) && crucero.destinations.length > 0 ? (
+        {Array.isArray(viaje?.destino) && viaje.destino.length > 0 ? (
           <ListGroup className="list-group-flush">
-            {crucero.destinations.map((destination, index) => (
+            {viaje.destino.map((destination, index) => (
               <ListGroup.Item key={index}>{destination}</ListGroup.Item>
             ))}
           </ListGroup>
@@ -52,8 +62,7 @@ export const DestinoDetailCard = () => {
           <p>Destinos no disponibles</p>
         )}
         <br />
-  
-        <p><strong>Características:</strong> {Array.isArray(crucero?.features) ? crucero.features.join(", ") : "Características no disponibles"}</p>
+        <p><strong>Características:</strong> {Array.isArray(viaje?.features) ? viaje.features.join(", ") : "Características no disponibles"}</p>
         
         <Button
           className="añadirfavoritos"

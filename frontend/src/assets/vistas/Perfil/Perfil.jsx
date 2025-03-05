@@ -6,10 +6,14 @@ import Form from "react-bootstrap/Form";
 import { useUserContext } from "../../../Context/UserContext";
 import "./perfil.css";
 
+
+
 export const Perfil = () => {
+  const { user, token, fetchUserProfile } = useUserContext(); 
+
   const misDestinos = useRef(null);
   const mispublicaciones = useRef(null);
-  const { user, token, fetchUserProfile } = useUserContext(); 
+  
   const [nombre, setNombre] = useState("");
   const [destino, setDestino] = useState("");
   const [calificacion, setCalificacion] = useState("");
@@ -17,17 +21,20 @@ export const Perfil = () => {
   const [viajes, setViajes] = useState([]);
   const [reseñas, setReseñas] = useState([]);
 
+  
+   useEffect(() => {
+    console.log("📌 Cargando perfil desde el backend...");
+    fetchUserProfile(); // 
+  }, []); // 
 
+  
   useEffect(() => {
-    const fetchProfileData = async () => {
-      if (user) {
-        setViajes(user.viajes || []);
-        setReseñas(user.reseñas || []); 
-      }
-    };
-    fetchProfileData();
-  }, [user]);
-
+    console.log("📌 Usuario actualizado en el perfil:", user);
+    if (user) {
+      setViajes(user.viajes || []);
+      setReseñas(user.reseñas || []);
+    }
+  }, [user]); 
   
 
   const scrollToSection = (ref) => {
@@ -79,7 +86,7 @@ export const Perfil = () => {
         </div>
         <div>
           <div className="imagendeperfil">
-            <img className="imagen" src={user ? user.imagen || '/sinimagen.png' : '/sinimagen.png'} alt="imagendeperfil" />
+          <img src={user?.imagen ? `http://localhost:3000/uploads/${user.imagen}` : "/sinimagen.png"} alt="Imagen de perfil" />
           </div>
         </div>
       </div>

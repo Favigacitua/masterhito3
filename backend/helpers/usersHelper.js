@@ -76,11 +76,84 @@ async function postUsers(nombre, apellido, email, password) {
     
     console.log("✅ Usuario creado:", rows[0]);
 
-    return rows[0]; // 🔥 Devuelve solo los datos sin la contraseña
+    return rows[0]; // 
   } catch (error) {
     console.error("❌ Error en postUsers:", error.message);
     throw error;
   }
 }
 
-export { getUsers, postUsers, getUserById, userLogin };
+const putUser = async (userId, { nombre, apellido, email, password, imagen }) => {
+  try {
+    const updateFields = [];
+    const values = [];
+    let query = "UPDATE usuario SET ";
+
+    if (nombre) {
+      updateFields.push("nombre = $" + (values.length + 1));
+      values.push(nombre);
+    }
+    if (apellido) {
+      updateFields.push("apellido = $" + (values.length + 1));
+      values.push(apellido);
+    }
+    if (email) {
+      updateFields.push("email = $" + (values.length + 1));
+      values.push(email);
+    }
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateFields.push("password = $" + (values.length + 1));
+      values.push(hashedPassword);
+    }
+    if (imagen) {
+      updateFields.push("imagen = $" + (values.length + 1));
+      values.push(imagen);
+    }
+
+    if (updateFields.length === 0) {
+      return { error: "No se enviaron datos para actualizar" };
+    }
+
+    query += updateFields.join(", ") + " WHERE id = $" + (values.length + 1) + " RETURNING *";
+    values.push(userId);
+
+    console.log("📌 Query generada:", query);
+    console.log("📌 Valores enviados:", values);
+
+    const result = await pool.query(query, values);
+    return { success: true, user: result.rows[0] };
+  } catch (error) {
+    console.error("❌ Error en updateUser:", error);
+    return { error: "Error interno del servidor" };
+  }
+};
+
+
+
+const getUserProfile = async (userId) => {
+  try {
+    const result = await pool.query(
+      "SELECT id, nombre, apellido, email, imagen FROM usuario WHERE id = $1",
+      [userId]
+    );
+
+    if (result.rows.length === 0) {
+      return { error: "Usuario no encontrado" };
+    }
+
+    const user = result.rows[0];
+    if (user.imagen) {
+      user.imagen = `http://localhost:3000/uploads/${user.imagen}`;
+    }
+
+    return { success: true, user };
+  } catch (error) {
+    console.error("❌ Error en getUserProfile:", error);
+    return { error: "Error interno del servidor" };
+  }
+};
+
+
+
+export { getUsers, postUsers, getUserById, userLogin, putUser,getUserProfile };

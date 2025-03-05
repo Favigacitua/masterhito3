@@ -3,14 +3,11 @@ import pool from "../config/dbConnection.js";
 
 const getViajesController = async (req, res) =>{
     try {
-
-        const { rows } = await getViajes()
-        res.json({
-            viajes : rows
-        })
-        
+        const viajes = await getViajes(); // 🔥 Aquí ya obtenemos el array de viajes
+        res.json({ viajes }); // ✅ Enviar el array dentro de un objeto con la propiedad `viajes`
     } catch (error) {
-        console.log(error)
+        console.log("❌ Error en getViajesController:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
     }
 }
 

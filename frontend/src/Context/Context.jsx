@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 export const MyContext = createContext({});
 
 export const Context = ({ children }) => {
-  const [cruceros, setCruceros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viajes, setViajes] = useState([]);
   const [filtroDestino, setFiltroDestino] = useState('');
@@ -15,14 +14,19 @@ export const Context = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/cruceros.json');
+        const response = await fetch("http://localhost:3000/api/viajes");  // 🔹 QUITADO "/" extra en la URL
         const data = await response.json();
-        console.log("Cruceros cargados desde JSON:", data);
+        console.log("📌 Viajes cargados desde backend:", data);
 
-        setCruceros(data.cruceros);  
-        setViajes(data.cruceros); 
+        if (Array.isArray(data)) {
+          setViajes(data);
+        } else if (data.viajes && Array.isArray(data.viajes)) {
+          setViajes(data.viajes); // Ajuste si la API devuelve un objeto con `viajes`
+        } else {
+          console.error("❌ Formato inesperado de viajes en la API:", data);
+        }
       } catch (error) {
-        console.error("Error al obtener los cruceros:", error);
+        console.error("Error al obtener los viajes:", error);
       } finally {
         setLoading(false);
       }
@@ -35,12 +39,12 @@ export const Context = ({ children }) => {
   useEffect(() => {
     setFiltroDestino(''); 
     setFiltroFecha(null); 
-    setViajes(cruceros); 
+    setViajes(viajes); 
   }, [location]);
 
   
   const aplicarFiltros = () => {
-    let filteredViajes = [...cruceros];
+    let filteredViajes = [...viajes];
     
     if (filtroDestino) {
       filteredViajes = filteredViajes.filter(viaje =>
@@ -73,12 +77,12 @@ export const Context = ({ children }) => {
   const resetFiltros = () => {
     setFiltroDestino(''); 
     setFiltroFecha(null); 
-    setViajes(cruceros); 
+    setViajes(viajes); 
   };
 
   
   const resetViajes = () => {
-    setViajes(cruceros);
+    setViajes(viajes);
   };
 
  
@@ -110,7 +114,7 @@ export const Context = ({ children }) => {
   };
 
   const globalState = {
-    cruceros,
+    
     loading,
     viajes,
     filtroDestino,

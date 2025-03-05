@@ -2,9 +2,14 @@ import pool from "../config/dbConnection.js"
 
 
 async function getViajes() {
-    const consulta = 'SELECT * FROM viajes'
-    const { rows } = await pool.query(consulta)
-    return {rows}
+    try {
+        const result = await pool.query("SELECT * FROM viajes");
+        console.log("📌 Viajes obtenidos desde la base de datos:", result.rows);
+        return result.rows;
+      } catch (error) {
+        console.error("❌ Error al obtener viajes:", error);
+        throw new Error("Error interno del servidor");
+      }
 }
 
 

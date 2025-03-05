@@ -46,7 +46,7 @@ export const UserProvider = ({ children }) => {
 
   const register = async (nombre, apellido, email, password) => {
     try {
-      const response = await fetch('http://localhost:3000/usuarios', {
+      const response = await fetch('http://localhost:3000/api/usuario', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,20 +69,23 @@ export const UserProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:3000/usuarios/login', {
+      const response = await fetch('http://localhost:3000/api/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-        },
+          'Content-Type': 'application/json',},
         body: JSON.stringify({ email, password }),
       });
 
+      
+
       const data = await response.json();
+
+      console.log("📌 Respuesta del backend:", data.user);
 
       if (response.ok) {
         setToken(data.token); 
         setUser(data.user);
-        console.log('Token recibido:', data.token);
+        console.log("📌 Usuario guardado en el contexto:", data.user); 
         return { success: true }; 
       } else {
         return { success: false, message: data.message || data.error || 'Error desconocido' };
@@ -102,7 +105,7 @@ export const UserProvider = ({ children }) => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch('http://localhost:3000/usuarios/perfil', {
+      const response = await fetch('http://localhost:3000/api/perfil', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -127,7 +130,7 @@ export const UserProvider = ({ children }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/usuarios/perfil', {
+      const response = await fetch('http://localhost:3000/api/perfil', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -152,7 +155,7 @@ export const UserProvider = ({ children }) => {
 
   const postReview = async (data) => {
     try {
-      const response = await fetch('http://localhost:3000/resenas', {
+      const response = await fetch('http://localhost:3000/api/resenas', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -176,7 +179,7 @@ export const UserProvider = ({ children }) => {
 
   const favoritos = async () => {
     try {
-      const response = await fetch('http://localhost:3000/favoritos', {
+      const response = await fetch('http://localhost:3000/api/favoritos', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -197,7 +200,7 @@ export const UserProvider = ({ children }) => {
 
   const addFavoritos = async (destinoId) => {
     try {
-      const response = await fetch('http://localhost:3000/favoritos', {
+      const response = await fetch('http://localhost:3000/api/favoritos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -225,7 +228,7 @@ export const UserProvider = ({ children }) => {
 
   const removeFavoritos = async (destinoId) => {
     try {
-      const response = await fetch(`http://localhost:3000/favoritos/${destinoId}`, {
+      const response = await fetch(`http://localhost:3000/api/favoritos/${destinoId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -249,7 +252,9 @@ export const UserProvider = ({ children }) => {
 
   const value = {
     token,
+    setToken,
     user,
+    setUser,
     register,
     login,
     logout,
@@ -266,4 +271,3 @@ export const UserProvider = ({ children }) => {
 
 
 export {UserContext}; 
-

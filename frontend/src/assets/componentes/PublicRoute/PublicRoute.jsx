@@ -1,17 +1,17 @@
-// PublicRoute.jsx
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useContext } from 'react';
-import {UserContext} from '../../../Context/UserContext';  
+import React from "react";
+import { Navigate, useLocation } from "react-router-dom";
+import { useUserContext } from "../../../Context/UserContext";  
 
 const PublicRoute = ({ children }) => {
-  const { token } = useContext(UserContext); 
+  const { token } = useUserContext();
+  const location = useLocation();  
 
-  if (token) {
-    return <Navigate to="/perfil" />; 
+  // 🔴 Si el usuario está autenticado y está en login o register, lo redirige a /perfil
+  if (token && (location.pathname === "/login" || location.pathname === "/register")) {
+    return <Navigate to="/perfil" />;
   }
 
-  return children;
+  return children;  // 🔹 Renderiza los componentes hijos correctamente
 };
 
 export default PublicRoute;

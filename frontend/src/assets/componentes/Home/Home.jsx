@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate  } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -92,7 +92,7 @@ export const Home = () => {
                     <>
                       <Nav.Link
                         as={NavLink}
-                        to="/profile"
+                        to="/perfil"
                         onClick={handleClose}
                         className={({ isActive }) =>
                           isActive ? "nav-link active-link" : "nav-link"
@@ -132,11 +132,11 @@ export const Home = () => {
                           backgroundColor: "#0DBCAD",
                           border: "2px solid #0DBCAD",
                         }}
-                        as={NavLink}
-                        to="/login"
+
                         onClick={() => {
                           handleLoginClick();
                           handleClose();
+                          navigate("/login");
                         }}
                       >
                         Iniciar Sesion
