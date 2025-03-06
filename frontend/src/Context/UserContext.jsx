@@ -397,6 +397,40 @@ export const UserProvider = ({ children }) => {
     }
   };
   
+  const deleteResena = async (idResena) => {
+    if (!token) {
+      console.error("❌ No hay token disponible para autenticar la solicitud.");
+      return { success: false, message: "No estás autenticado." };
+    }
+  
+    try {
+      const response = await fetch(`http://localhost:3000/api/mis_resenas/${idResena}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Error al eliminar la reseña.");
+      }
+  
+      console.log("🗑️ Reseña eliminada:", data);
+  
+      // Actualizar el estado del usuario eliminando la reseña localmente
+      setUser((prevUser) => ({
+        ...prevUser,
+        resenas: prevUser.resenas.filter((resena) => resena.id !== idResena),
+      }));
+  
+      return { success: true, message: "Reseña eliminada correctamente." };
+    } catch (error) {
+      console.error("❌ Error al eliminar reseña:", error.message);
+      return { success: false, message: "Error al eliminar la reseña." };
+    }
+  };
 
 
 
@@ -416,7 +450,8 @@ export const UserProvider = ({ children }) => {
     postReview,          
     fetchUserFavoritos,     
     addFavoritos,         
-    removeFavoritos,    
+    removeFavoritos, 
+    deleteResena   
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

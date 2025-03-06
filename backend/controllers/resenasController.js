@@ -1,7 +1,7 @@
 import pool from "../config/dbConnection.js"; 
 import jwt from 'jsonwebtoken';
 import { secretKey } from "../secretKey.js";
-import { getResenasPorViaje, getMisResenas, postResenas, getResenas } from "../helpers/resenasHelper.js";
+import { getResenasPorViaje, getMisResenas, postResenas, getResenas, deleteResena } from "../helpers/resenasHelper.js";
 
 
 const getResenasController = async (req, res) => {
@@ -101,9 +101,28 @@ const postResenasController = async (req, res) => {
     }
 };
 
+const deleteResenaController = async (req, res) => {
+    try {
+      const { id } = req.params; // ID de la reseña
+      const idUsuario = req.user.id; // Se obtiene del token del usuario autenticado
+  
+      const resenaEliminada = await deleteResena(id, idUsuario);
+  
+      if (!resenaEliminada) {
+        return res.status(404).json({ error: "Reseña no encontrada o no tienes permiso para eliminarla" });
+      }
+  
+      res.status(200).json({ message: "Reseña eliminada correctamente", resena: resenaEliminada });
+    } catch (error) {
+      console.error("❌ Error en deleteResenaController:", error.message);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  };
+
 export {
     getResenasController,
     getMisResenasController,
     getResenasPorViajeController,
-    postResenasController
+    postResenasController,
+    deleteResenaController
 }

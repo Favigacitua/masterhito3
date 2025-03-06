@@ -74,9 +74,28 @@ async function postResenas(id_usuario, id_viaje, valoracion, descripcion) {
     }
 }
 
+
+async function deleteResena (idResena, idUsuario)  {
+    try {
+      const consulta = "DELETE FROM resenas WHERE id = $1 AND id_usuario = $2 RETURNING *";
+      const { rows } = await pool.query(consulta, [idResena, idUsuario]);
+  
+      if (rows.length === 0) {
+        return null; // Si no se eliminó nada, significa que la reseña no existe o no pertenece al usuario
+      }
+  
+      return rows[0]; // Retorna la reseña eliminada
+    } catch (error) {
+      console.error("❌ Error en deleteResena:", error.message);
+      throw error;
+    }
+  };
+
+
 export {
     getResenas,
     getResenasPorViaje,
     getMisResenas,
-    postResenas
+    postResenas,
+    deleteResena
 }

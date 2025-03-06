@@ -14,6 +14,7 @@ export const Perfil = () => {
     fetchUserReviews,
     fetchUserviajes,
     postReview,
+    deleteResena
   } = useUserContext();
 
   const misDestinos = useRef(null);
@@ -94,6 +95,20 @@ export const Perfil = () => {
       alert(`❌ Error: ${resultado?.message || "Error desconocido al enviar la reseña."}`);
     }
   };
+
+  const handleDeleteResena = async (id) => {
+    const confirmacion = window.confirm("¿Estás seguro de que quieres eliminar esta reseña?");
+    if (!confirmacion) return;
+
+    const resultado = await deleteResena(id);
+    if (resultado.success) {
+      alert("✅ Reseña eliminada correctamente.");
+      fetchUserReviews(); // 🔥 Recargar las reseñas después de eliminar
+    } else {
+      alert(`❌ Error: ${resultado.message}`);
+    }
+  };
+
 
   return (
     <div className="perfilcontainer">
@@ -209,13 +224,22 @@ export const Perfil = () => {
           <div className="reseñas-container">
             {reseñas.length > 0 ? (
               reseñas.map((resena) => (
-                <Card key={resena.id} style={{ width: "18rem" }}>
-                  <Card.Body>
+                <Card key={resena.id} style={{ width: "18rem"}}>
+                  <Card.Body style={{height:"auto", margin:"1rem"}}>
                     <Card.Title>({resena.valoracion} estrellas)</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">
                       {resena.nombre_viaje}
                     </Card.Subtitle>
                     <Card.Text>{resena.descripcion}</Card.Text>
+                    
+                    <Button
+                  variant="danger"
+                  onClick={() => handleDeleteResena(resena.id)}
+                >
+                  Eliminar Reseña
+                </Button>
+               
+                
                   </Card.Body>
                 </Card>
               ))
