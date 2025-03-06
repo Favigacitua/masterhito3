@@ -154,6 +154,54 @@ const getUserProfile = async (userId) => {
   }
 };
 
+async function getFavoritos(id_usuario) {
+  try {
+      const consulta = `
+          SELECT f.id, v.id AS id_viaje, v.nombre, v.descripcion, v.precio, v.imagen 
+          FROM favoritos f
+          JOIN viajes v ON f.id_viaje = v.id
+          WHERE f.id_usuario = $1
+      `;
+      const { rows } = await pool.query(consulta, [id_usuario]);
+      return rows;
+  } catch (error) {
+      console.error("❌ Error al obtener favoritos:", error);
+      throw new Error("Error interno del servidor");
+  }
+}
+
+async function addFavorito(id_usuario, id_viaje) {
+  try {
+      const consulta = `
+          INSERT INTO favoritos (id_usuario, id_viaje) VALUES ($1, $2)
+          RETURNING *;
+      `;
+      const { rows } = await pool.query(consulta, [id_usuario, id_viaje]);
+      return rows[0];
+  } catch (error) {
+      console.error("❌ Error al agregar favorito:", error);
+      throw new Error("Error interno del servidor");
+  }
+}
+
+async function removeFavorito(id_usuario, id_viaje) {
+  try {
+      const query = `DELETE FROM favoritos WHERE id_usuario = $1 AND id_viaje = $2 RETURNING *`;
+      const { rows } = await pool.query(query, [id_usuario, id_viaje]);
+
+      if (rows.length === 0) {
+          return { error: "El favorito no existe o ya fue eliminado." };
+      }
+
+      return { success: true, message: "Favorito eliminado con éxito" };
+  } catch (error) {
+      console.error("❌ Error al eliminar favorito:", error);
+      throw new Error("Error interno del servidor");
+  }
+}
 
 
-export { getUsers, postUsers, getUserById, userLogin, putUser,getUserProfile };
+
+
+
+export {removeFavorito,addFavorito, getUsers, postUsers, getUserById, userLogin, putUser,getUserProfile, getFavoritos };

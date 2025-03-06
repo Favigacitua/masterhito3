@@ -18,12 +18,15 @@ export const DestinoDetailCard = () => {
 
     console.log("🔍 Buscando viaje con ID:", id);
     console.log("📌 Lista de viajes disponibles:", viajes);
-    const selectedViaje = viajes.find(v => v.id === Number(id))
-    if (selectedViaje) {
-      console.log("✅ Viaje encontrado:", selectedViaje);
-      setViaje(selectedViaje);
-    } else {
-      console.log("⚠️ No se encontró un viaje con ese ID.");
+
+       if (viajes.length > 0) {
+      const selectedViaje = viajes.find((v) => v.id === Number(id));
+      if (selectedViaje) {
+        console.log("✅ Viaje encontrado:", selectedViaje);
+        setViaje(selectedViaje);
+      } else {
+        console.log("⚠️ No se encontró un viaje con ese ID.");
+      }
     }
   }, [id, viajes]);
 
@@ -38,7 +41,7 @@ export const DestinoDetailCard = () => {
 
   return (
     <div className="destino-detail-card">
-      {viaje?.image ? (
+      {viaje?.imagen ? (
         <img src={`http://localhost:3000/uploads/${viaje.imagen}`} alt={viaje.nombre} className="destino-detail-image" />
       ) : (
         <p>No hay imagen disponible</p>
@@ -48,7 +51,8 @@ export const DestinoDetailCard = () => {
       <h2>{viaje?.nombre || "Nombre no disponible"}</h2>
         <p>{viaje?.descripcion || "Descripción no disponible"}</p>
         <p><strong>Precio por persona:</strong> ${viaje?.precio || "Precio no disponible"}</p>
-        <p><strong>Fechas:</strong> {viaje?.fecha_salida || "Fecha no disponible"} - {viaje?.duracion || "Duración no disponible"} días</p>
+        <p><strong>Fechas:</strong> {viaje?.fecha_salida ? new Date(viaje.fecha_salida).toLocaleDateString() : "Fecha no disponible"}</p>
+        <p><strong>Duracion:</strong> {viaje?.duracion || "Fecha no disponible"} dias</p>
         <p><strong>Capacidad:</strong> {viaje?.capacidad || "Capacidad no disponible"}</p>
   
         <p><strong>Destinos:</strong></p>

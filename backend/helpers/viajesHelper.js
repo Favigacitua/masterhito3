@@ -1,4 +1,6 @@
 import pool from "../config/dbConnection.js"
+import jwt from "jsonwebtoken";
+import { secretKey } from "../secretKey.js";
 
 
 async function getViajes() {
@@ -19,23 +21,32 @@ async function getViajeId(id) {
     return rows[0] || null
 }
 
-async function getMisViajes(token) {
-    //verifica token valido
-    const consulta = 'SELECT id FROM usuarios WHERE token = $1'
-    const { rows: usuarioRows } = await pool.query(consulta, [token])
-
-    if (usuarioRows.length === 0) {
-        throw new Error("Token inválido o usuario no encontrado");
+async function getMisViajes(authHeader) {
+    // Verifica que el token sea válido y obtiene el id del usuario
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        throw new Error("Token de autenticación requerido");
     }
+    const extraerToken = authHeader.split(" ")[1]; // Extraemos el token real
 
-    const usuarioId = usuarioRows[0].id;
-
-    //verifica viajes usuario autenticado
-    const consultaViajes = 'SELECT * FROM mis_viajes WHERE id_usuario = $1';
+    let usuarioId;
+    try {
+        const decoded = jwt.verify(extraerToken, secretKey);
+        usuarioId = decoded.id; // ✅ Extraemos el ID del usuario desde el token
+    } catch (error) {
+        throw new Error("Token inválido o expirado");
+    }
+    // Obtener la información completa de los viajes del usuario
+    const consultaViajes = `
+        SELECT v.id, v.nombre, v.descripcion, v.precio, v.imagen
+        FROM mis_viajes mv
+        JOIN viajes v ON mv.id_viaje = v.id
+        WHERE mv.id_usuario = $1
+    `;
     const { rows: viajesRows } = await pool.query(consultaViajes, [usuarioId]);
 
-    return viajesRows; 
+    return viajesRows;
 }
+
 
 async function postViajesFavoritos(id_usuario, id_viaje ) {
     const consulta = 'INSERT INTO favoritos (id_usuario, id_viaje) VALUES($1,$2) RETURNING *'

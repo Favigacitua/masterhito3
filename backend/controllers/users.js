@@ -1,6 +1,16 @@
-import { getUsers, postUsers, getUserById, userLogin, putUser, getUserProfile } from "../helpers/usersHelper.js";
-import jwt from 'jsonwebtoken';
-import { secretKey } from '../secretKey.js'; 
+import {
+  removeFavorito,
+  getUsers,
+  postUsers,
+  getUserById,
+  userLogin,
+  putUser,
+  getUserProfile,
+  getFavoritos,
+  addFavorito,
+} from "../helpers/usersHelper.js";
+import jwt from "jsonwebtoken";
+import { secretKey } from "../secretKey.js";
 
 // 🔥 Controlador para obtener todos los usuarios (requiere autenticación)
 const getUsersController = async (req, res) => {
@@ -30,7 +40,8 @@ const getUserByIdController = async (req, res) => {
   }
 };
 
-const loginController = async (req, res) => { // 🔥 El controller mantiene el nombre loginController
+const loginController = async (req, res) => {
+  // 🔥 El controller mantiene el nombre loginController
   try {
     const { email, password } = req.body;
     console.log(`🔍 Intentando login con: ${email}`);
@@ -43,22 +54,22 @@ const loginController = async (req, res) => { // 🔥 El controller mantiene el 
     }
 
     // 🔥 Generar token JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user.id, email: user.email }, secretKey);
 
     console.log("✅ Login exitoso. Token generado.");
 
-    res.status(200).json({ token, 
-      user: { 
-        id: user.id, 
-        nombre: user.nombre, 
-        apellido: user.apellido, 
-        email: user.email,  
-        imagen: user.imagen 
-        ? `http://localhost:3000/uploads/${user.imagen}` 
-          : "/sinimagen.png"  
-      } 
+    res.status(200).json({
+      token,
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        apellido: user.apellido,
+        email: user.email,
+        imagen: user.imagen
+          ? `http://localhost:3000/uploads/${user.imagen}`
+          : "/sinimagen.png",
+      },
     });
-
   } catch (error) {
     console.error("❌ Error en loginController:", error.message);
     res.status(500).json({ error: "Error en el servidor" });
@@ -68,26 +79,20 @@ const loginController = async (req, res) => { // 🔥 El controller mantiene el 
 // 🔥 Controlador para registrar un nuevo usuario y generar token
 const postUsersController = async (req, res) => {
   try {
-    const { nombre, apellido, email, password, repetir_password } = req.body;
-
-    if (password !== repetir_password) {
-      return res.status(400).json({ error: "Las contraseñas no coinciden" });
-    }
+    const { nombre, apellido, email, password } = req.body;
 
     const user = await postUsers(nombre, apellido, email, password);
-    
+
     console.log("✅ Usuario registrado:", user);
 
     // 🔥 Generar un token JWT
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      secretKey,
-      { expiresIn: '1h' }
-    );
+    const token = jwt.sign({ id: user.id, email: user.email }, secretKey, {
+      expiresIn: "1h",
+    });
 
     res.status(201).json({
       token,
-      user
+      user,
     });
   } catch (error) {
     console.error("❌ Error en postUsersController:", error.message);
@@ -104,17 +109,27 @@ const putUserController = async (req, res) => {
       return res.status(401).json({ error: "No autorizado" });
     }
 
-    
     const decoded = jwt.verify(token, secretKey);
 
     const userId = decoded.id;
 
-  
-    const { nombre, apellido, email, password } = req.body;
-    const imagen = req.file ? req.file.filename : null; 
-    console.log("📌 Datos recibidos:", { nombre, apellido, email, password, imagen });
-  
-    const result = await putUser(userId, { nombre, apellido, email, password, imagen });
+    const { email, nombre, apellido, password } = req.body;
+    const imagen = req.file ? req.file.filename : null;
+    console.log("📌 Datos recibidos:", {
+      email,
+      nombre,
+      apellido,
+      password,
+      imagen,
+    });
+
+    const result = await putUser(userId, {
+      email,
+      nombre,
+      apellido,
+      password,
+      imagen,
+    });
 
     if (result.error) {
       return res.status(400).json({ error: result.error });
@@ -127,7 +142,7 @@ const putUserController = async (req, res) => {
   }
 };
 
- const getUserProfileController = async (req, res) => {
+const getUserProfileController = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
@@ -150,4 +165,95 @@ const putUserController = async (req, res) => {
   }
 };
 
-export { getUsersController, postUsersController, getUserByIdController, loginController, putUserController, getUserProfileController };
+const getFavoritosController = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res
+        .status(401)
+        .json({ error: "Token de autenticación requerido" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, secretKey);
+    const id_usuario = decoded.id;
+
+    const favoritos = await getFavoritos(id_usuario);
+
+    res.json({ favoritos });
+  } catch (error) {
+    console.error("❌ Error en getFavoritosController:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
+const addFavoritoController = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res
+        .status(401)
+        .json({ error: "Token de autenticación requerido" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, secretKey);
+    const id_usuario = decoded.id;
+
+    const { id_viaje } = req.body;
+
+    if (!id_viaje) {
+      return res.status(400).json({ error: "ID de viaje requerido" });
+    }
+
+    const favorito = await addFavorito(id_usuario, id_viaje);
+    res.status(201).json({ message: "Favorito agregado", favorito });
+  } catch (error) {
+    console.error("❌ Error en addFavoritoController:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
+const removeFavoritoController = async (req, res) => {
+  try {
+    console.log("📌 DELETE /mis_favoritos alcanzado");
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res
+        .status(401)
+        .json({ error: "Token de autenticación requerido" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, secretKey);
+    const { id_viaje } = req.params;
+
+    if (!id_viaje) {
+      return res.status(400).json({ error: "ID de viaje requerido" });
+    }
+
+    const result = await removeFavorito(decoded.id, id_viaje);
+
+    if (result.error) {
+      return res.status(404).json({ error: result.error });
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error("❌ Error en deleteFavoritoController:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
+export {
+  removeFavoritoController,
+  addFavoritoController,
+  getFavoritosController,
+  getUsersController,
+  postUsersController,
+  getUserByIdController,
+  loginController,
+  putUserController,
+  getUserProfileController,
+};

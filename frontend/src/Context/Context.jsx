@@ -9,6 +9,7 @@ export const Context = ({ children }) => {
   const [filtroDestino, setFiltroDestino] = useState('');
   const [filtroFecha, setFiltroFecha] = useState(null);
   const [mensajeEnviado, setMensajeEnviado] = useState(null);
+  const [resenas, setResenas] = useState({});
   const location = useLocation();
 
   useEffect(() => {
@@ -48,7 +49,7 @@ export const Context = ({ children }) => {
     
     if (filtroDestino) {
       filteredViajes = filteredViajes.filter(viaje =>
-        viaje.destinations.some(destino =>
+        viaje.destino.some(destino =>
           destino.toLowerCase().includes(filtroDestino.toLowerCase()) 
         )
       );
@@ -56,7 +57,7 @@ export const Context = ({ children }) => {
 
     if (filtroFecha) {
       filteredViajes = filteredViajes.filter(viaje =>
-        new Date(viaje.departureDate) >= filtroFecha 
+        new Date(viaje.fecha_salida) >= filtroFecha 
       );
     }
 
@@ -113,6 +114,39 @@ export const Context = ({ children }) => {
     }
   };
 
+  const fetchResenasPorViaje = async (viajeId) => {
+    
+    if (!viajeId) return;
+    console.warn("⚠️ No se recibió un viajeId en CardReseña.");
+    if (resenas[viajeId]) return; // 🔹 Evita hacer la misma petición varias veces
+
+    console.log(`🔍 Buscando reseñas en: http://localhost:3000/api/resenas/viaje/${viajeId}`);
+
+    const apiUrl = `http://localhost:3000/api/resenas/viaje/${viajeId}`;
+    console.log(`🔍 Intentando obtener: ${apiUrl}`);
+
+    try {
+
+      const response = await fetch(apiUrl);
+      console.log("📌 Respuesta del servidor:", response);
+      const data = await response.json();
+      console.log("📌 Datos recibidos:", data);
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al obtener reseñas");
+      }
+
+      console.log("📌 Reseñas recibidas del backend:", data.resenas);
+
+      setResenas((prev) => ({
+        ...prev,
+        [viajeId]: data.resenas,
+      }));
+    } catch (error) {
+      console.error("❌ Error al obtener reseñas:", error);
+    }
+  };
+
   const globalState = {
     
     loading,
@@ -121,10 +155,12 @@ export const Context = ({ children }) => {
     filtroFecha,
     actualizarFiltroDestino,
     actualizarFiltroFecha,
+    resenas,
     resetFiltros,
     resetViajes,
     enviarFormularioContacto, 
-    mensajeEnviado
+    mensajeEnviado,
+    fetchResenasPorViaje
 
   };
 

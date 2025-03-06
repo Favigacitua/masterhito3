@@ -39,14 +39,14 @@ export const request = {
           nombre: { type: "string" },
           apellido: { type: "string" },
           password: { type: "string" },
-          repetir_password: { type: "string" },
+          
         },
         required: [
           "email",
           "nombre",
           "apellido",
           "password",
-          "repetir_password",
+          
         ],
       },
       response: {

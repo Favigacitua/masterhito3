@@ -6,14 +6,19 @@ import Form from "react-bootstrap/Form";
 import { useUserContext } from "../../../Context/UserContext";
 import "./perfil.css";
 
-
-
 export const Perfil = () => {
-  const { user, token, fetchUserProfile } = useUserContext(); 
+  const {
+    user,
+    token,
+    fetchUserProfile,
+    fetchUserReviews,
+    fetchUserviajes,
+    postReview,
+  } = useUserContext();
 
   const misDestinos = useRef(null);
   const mispublicaciones = useRef(null);
-  
+
   const [nombre, setNombre] = useState("");
   const [destino, setDestino] = useState("");
   const [calificacion, setCalificacion] = useState("");
@@ -21,21 +26,29 @@ export const Perfil = () => {
   const [viajes, setViajes] = useState([]);
   const [reseñas, setReseñas] = useState([]);
 
-  
-   useEffect(() => {
+  useEffect(() => {
     console.log("📌 Cargando perfil desde el backend...");
-    fetchUserProfile(); // 
-  }, []); // 
+    fetchUserProfile();
+  }, []);
 
-  
+  useEffect(() => {
+    if (!token) {
+      console.warn("⚠️ No hay token disponible todavía. Esperando...");
+      return;
+    }
+
+    console.log("📌 Token encontrado, cargando datos del usuario...");
+    fetchUserReviews(); // 🔥 Cargar reseñas del usuario
+    fetchUserviajes(); // 🔥 Cargar viajes del usuario
+  }, [token]);
+
   useEffect(() => {
     console.log("📌 Usuario actualizado en el perfil:", user);
     if (user) {
       setViajes(user.viajes || []);
-      setReseñas(user.reseñas || []);
+      setReseñas(user.resenas || []);
     }
-  }, [user]); 
-  
+  }, [user]);
 
   const scrollToSection = (ref) => {
     if (ref.current) {
@@ -50,34 +63,82 @@ export const Perfil = () => {
     }
   };
 
- 
-  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    if (!user || !user.id) {
+      alert("Error: No se pudo obtener la información del usuario.");
+      return;
+    }
+
+    if (!destino || !calificacion || !comentario) {
+      alert("Todos los campos son obligatorios.");
+      return;
+    }
+
+    console.log("📌 Enviando reseña con:", {
+      id_viaje: Number(destino), // 🔥 Convertir a número
+      valoracion: Number(calificacion), // 🔥 Convertir a número
+      descripcion: comentario
+    });
+
+    const resultado = await postReview(Number(destino), Number(calificacion), comentario);
+
+    if (resultado && resultado.success) {
+      alert("Reseña enviada con éxito.");
+      setDestino("");
+      setCalificacion("");
+      setComentario("");
+      fetchUserReviews(); // 🔥 Recargar las reseñas del usuario
+    } else {
+      alert(`❌ Error: ${resultado?.message || "Error desconocido al enviar la reseña."}`);
+    }
+  };
 
   return (
     <div className="perfilcontainer">
       <div className="datos">
-        <h1 style={{ color: "#0DBCAD", fontSize: "clamp(50px, 4vw, 24px)", padding: '2rem' }}>
+        <h1
+          style={{
+            color: "#0DBCAD",
+            fontSize: "clamp(50px, 4vw, 24px)",
+            padding: "2rem",
+          }}
+        >
           {user ? `${user.nombre} ${user.apellido}` : "Cargando..."}
         </h1>
         <div className="botonesperfil">
           <Button
             className="misdestinos"
-            style={{ backgroundColor: "lightgrey", border: "2px solid grey", color: "#0DBCAD", margin: '1rem' }}
+            style={{
+              backgroundColor: "lightgrey",
+              border: "2px solid grey",
+              color: "#0DBCAD",
+              margin: "1rem",
+            }}
             onClick={() => scrollToSection(misDestinos)}
           >
             Mis destinos
           </Button>
           <Button
             className="mispublicaciones"
-            style={{ backgroundColor: "lightgrey", border: "2px solid grey", color: "#0DBCAD", margin: '1rem' }}
+            style={{
+              backgroundColor: "lightgrey",
+              border: "2px solid grey",
+              color: "#0DBCAD",
+              margin: "1rem",
+            }}
             onClick={() => scrollToSection(mispublicaciones)}
           >
             Mis Publicaciones
           </Button>
           <Button
             className="Editar perfil"
-            style={{ backgroundColor: "#0DBCAD", border: "2px solid #0DBCAD", margin: '1rem' }}
+            style={{
+              backgroundColor: "#0DBCAD",
+              border: "2px solid #0DBCAD",
+              margin: "1rem",
+            }}
             as={NavLink}
             to="/editarperfil"
           >
@@ -86,87 +147,143 @@ export const Perfil = () => {
         </div>
         <div>
           <div className="imagendeperfil">
-          <img src={user?.imagen ? `http://localhost:3000/uploads/${user.imagen}` : "/sinimagen.png"} alt="Imagen de perfil" />
+            <img
+              src={
+                user?.imagen
+                  ? `http://localhost:3000/uploads/${user.imagen}`
+                  : "/sinimagen.png"
+              }
+              alt="Imagen de perfil"
+            />
           </div>
         </div>
       </div>
       <div className="misexperiencias">
         <div className="misdestinos" ref={misDestinos}>
           <h3 style={{ color: "#0DBCAD" }}>Mis Destinos</h3>
+
           <div className="destinos-container">
-            {viajes && viajes.map((viaje) => (
-              <Card key={viaje.id} style={{ width: '18rem', minWidth: '18rem' }}>
-                <Card.Img variant="top" src={viaje.image} alt={viaje.name} />
-                <Card.Body>
-                  <Card.Title>{viaje.name}</Card.Title>
-                  <Card.Text>{viaje.description}</Card.Text>
-                  <p><strong>Precio por persona:</strong> ${viaje.pricePerPerson}</p>
-                </Card.Body>
-                <ListGroup className="list-group-flush">
-                  {viaje.destinations.map((destination, index) => (
-                    <ListGroup.Item key={index}>{destination}</ListGroup.Item>
-                  ))}
-                </ListGroup>
-                <Card.Body>
-                  <Card.Link as={NavLink} to={`/viaje/${viaje.id}`} activeClassName="active">
-                    Ver más información
-                  </Card.Link>
-                </Card.Body>
-              </Card>
-            ))}
+            {viajes.length > 0 ? (
+              viajes.map((viaje) => (
+                <Card
+                  key={viaje.id}
+                  className="cardviaje"
+                  style={{ width: "18rem", minWidth: "18rem" }}
+                >
+                  <Card.Img
+                    variant="top"
+                    src={`http://localhost:3000/uploads/${viaje.imagen}`}
+                    alt={viaje.nombre}
+                  />
+                  <Card.Body>
+                    <Card.Title>{viaje.nombre}</Card.Title>
+                    <Card.Text>{viaje.descripcion}</Card.Text>
+                    <p>
+                      <strong>Precio por persona:</strong> ${viaje.precio}
+                    </p>
+                  </Card.Body>
+                  <div className="linkdestino">
+                    <Card.Link
+                      as={NavLink}
+                      to={`/viaje/${viaje.id}`}
+                      className={({ isActive }) => (isActive ? "active" : "")}
+                    >
+                      Ver más información
+                    </Card.Link>
+                  </div>
+                </Card>
+              ))
+            ) : (
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "gray",
+                  fontSize: "1.2rem",
+                }}
+              >
+                No has reservado ningún viaje aún.
+              </p>
+            )}
           </div>
         </div>
 
         <div className="mispublicaciones" ref={mispublicaciones}>
           <h3 style={{ color: "#0DBCAD" }}>Mis Publicaciones</h3>
           <div className="reseñas-container">
-            {reseñas && reseñas.map((crucero) => (
-              <div key={crucero.id}>
-                {crucero.reviews.map((review, index) => (
-                  <Card key={index} style={{ width: '18rem' }}>
-                    <Card.Body>
-                      <Card.Title>({review.rating} estrellas)</Card.Title>
-                      <Card.Subtitle className="mb-2 text-muted">{review.username}</Card.Subtitle>
-                      <Card.Text>{review.comment}</Card.Text>
-                    </Card.Body>
-                  </Card>
-                ))}
-              </div>
-            ))}
+            {reseñas.length > 0 ? (
+              reseñas.map((resena) => (
+                <Card key={resena.id} style={{ width: "18rem" }}>
+                  <Card.Body>
+                    <Card.Title>({resena.valoracion} estrellas)</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                      {resena.nombre_viaje}
+                    </Card.Subtitle>
+                    <Card.Text>{resena.descripcion}</Card.Text>
+                  </Card.Body>
+                </Card>
+              ))
+            ) : (
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "gray",
+                  fontSize: "1.2rem",
+                }}
+              >
+                No has hecho una reseña aún.
+              </p>
+            )}
           </div>
         </div>
       </div>
       <div className="enviarpublicacion">
-        <h1 className="titulo" style={{ color: "#0DBCAD", fontSize: "clamp(50px, 4vw, 24px)", padding: '2rem' }}>Califica tus viajes</h1>
+        <h1
+          className="titulo"
+          style={{
+            color: "#0DBCAD",
+            fontSize: "clamp(50px, 4vw, 24px)",
+            padding: "2rem",
+          }}
+        >
+          Califica tus viajes
+        </h1>
 
-        <Form className="formulariopublicacion">
+        <Form className="formulariopublicacion" onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>Nombre</Form.Label>
-            <Form.Control 
-              type="text" 
-              placeholder="Ingresa tu nombre" 
+            <Form.Control
+              type="text"
+              placeholder="Ingresa tu nombre"
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
+
+          <Form.Group className="mb-3">
             <Form.Label>Destino</Form.Label>
-            <Form.Control 
-              type="text" 
-              placeholder="Ingresa el destino" 
+            <Form.Select
               value={destino}
-              onChange={(e) => setDestino(e.target.value)}
-            />
+              onChange={(e) => setDestino(Number(e.target.value))} // 🔥 Convertir a número
+            >
+              <option value="">Selecciona un destino</option>
+              {viajes.map((viaje) => (
+                <option key={viaje.id} value={viaje.id}>
+                  {viaje.nombre}
+                </option>
+              ))}
+            </Form.Select>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput3">
             <Form.Label>Calificación</Form.Label>
-            <Form.Control 
-              type="number" 
-              placeholder="Ingrese una calificación (1-5)" 
+            <Form.Control
+              type="number"
+              placeholder="Ingrese una calificación (1-5)"
               value={calificacion}
               onChange={handleChange}
             />
           </Form.Group>
+
           <Form.Group className="mb-3">
             <Form.Label>Cuenta tu experiencia</Form.Label>
             <Form.Control
@@ -177,6 +294,7 @@ export const Perfil = () => {
               onChange={(e) => setComentario(e.target.value)}
             />
           </Form.Group>
+
           <Button
             style={{ backgroundColor: "#0DBCAD", border: "2px solid #0DBCAD" }}
             type="submit"

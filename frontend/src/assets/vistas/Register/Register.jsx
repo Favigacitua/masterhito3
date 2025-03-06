@@ -2,17 +2,19 @@ import React, { useState, useContext } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import {UserContext} from "../../../Context/UserContext"; 
+import { useNavigate } from "react-router-dom";
 import './register.css'
 
 export const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [password2, setPassword2] = useState('');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const [nombre, setNombre] = useState('');
+    const [apellido, setApellido] = useState('');
     const [error, setError] = useState(false);
 
-   
+    const navigate = useNavigate();
+
     const { register } = useContext(UserContext);
 
     
@@ -23,12 +25,13 @@ export const Register = () => {
             setEmail(value);
         } else if (name === 'password') {
             setPassword(value);
+        } else if (name === 'apellido') {
+            setApellido(value);
+        
         } else if (name === 'password2') {
             setPassword2(value);
-        } else if (name === 'firstName') {
-            setFirstName(value);
-        } else if (name === 'lastName') {
-            setLastName(value);
+        } else if (name === 'nombre') {
+            setNombre(value);
         }
     }
 
@@ -37,7 +40,7 @@ export const Register = () => {
         event.preventDefault();
 
         
-        if (email === '' || password === '' || password2 === '' || firstName === '' || lastName === '') {
+        if (email === '' || password === '' || password2 === '' || nombre === '' || apellido === '') {
             setError('Todos los campos son obligatorios');
             alert('Todos los campos son obligatorios');
             return;
@@ -52,21 +55,22 @@ export const Register = () => {
         }
 
         
-        const response = await register(email, password, firstName, lastName);
+        const response = await register(nombre, apellido, email, password );
 
         if (!response.success) {
             setError(response.message || 'Error desconocido');
             alert(response.message || 'Error desconocido');
         } else {
             alert('Te has registrado correctamente');
+            navigate("/login");
         }
 
         
         setEmail('');
         setPassword('');
         setPassword2('');
-        setFirstName('');
-        setLastName('');
+        setNombre('');
+        setApellido('');
         setError(false);
     }
 
@@ -98,8 +102,8 @@ export const Register = () => {
                             type="text"
                             placeholder="Introduce tu primer nombre"
                             onChange={onInputChange}
-                            value={firstName}
-                            name="firstName"
+                            value={nombre}
+                            name="nombre"
                         />
                     </Form.Group>
     
@@ -109,8 +113,8 @@ export const Register = () => {
                             type="text"
                             placeholder="Introduce tu apellido"
                             onChange={onInputChange}
-                            value={lastName}
-                            name="lastName"
+                            value={apellido}
+                            name="apellido"
                         />
                     </Form.Group>
     

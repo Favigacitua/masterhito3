@@ -17,13 +17,15 @@ export const UserProvider = ({ children }) => {
     }
   });
 
+
+
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('user');
     try {
-      return savedUser ? JSON.parse(savedUser) : null; 
+      return savedUser ? JSON.parse(savedUser) : {favoritos: []}; 
     } catch (error) {
       console.error('Error parsing user:', error);
-      return null; 
+      return {favoritos: []}; 
     }
   });
 
@@ -46,7 +48,7 @@ export const UserProvider = ({ children }) => {
 
   const register = async (nombre, apellido, email, password) => {
     try {
-      const response = await fetch('http://localhost:3000/api/usuario', {
+      const response = await fetch('http://localhost:3000/api/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,6 +107,11 @@ export const UserProvider = ({ children }) => {
 
   const fetchUserProfile = async () => {
     try {
+
+      if (!token) {
+        console.warn("⚠️ No hay token disponible, esperando autenticación...");
+        return;
+      }
       const response = await fetch('http://localhost:3000/api/perfil', {
         method: 'GET',
         headers: {
@@ -112,13 +119,25 @@ export const UserProvider = ({ children }) => {
         },
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data); 
-        return { success: true, user: data };
-      } else {
-        return { success: false, message: 'Error al obtener el perfil.' };
+      const data = await response.json();
+
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al obtener perfil");
       }
+
+      console.log("📌 Perfil recibido:", data);
+
+      setUser((prevUser) => ({
+        ...prevUser,
+        id: data.id,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        email: data.email,
+        imagen: data.imagen,
+        token: token, // 🔥 Aseguramos que el token se guarda correctamente
+      }));
+      
     } catch (error) {
       return { success: false, message: error.message };
     }
@@ -153,82 +172,140 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const postReview = async (data) => {
+ 
+
+  const postReview = async (id_viaje, valoracion, descripcion) => {
+
+    if (!token || !user || !user.id) {
+      console.error("❌ No hay token o usuario disponible.");
+      return { success: false, message: "No estás autenticado." };
+    }
+
+    console.log("📌 Datos enviados al backend:", { 
+      id_viaje: Number(id_viaje),  // 🔥 Convertimos a número
+      valoracion: Number(valoracion),       
+      descripcion 
+    });
+
     try {
-      const response = await fetch('http://localhost:3000/api/resenas', {
+      const response = await fetch('http://localhost:3000/api/mis_resenas', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ 
+          id_viaje: Number(id_viaje), 
+          valoracion: Number(valoracion), 
+          descripcion 
+        }),
       });
-
+  
       const result = await response.json();
-
-      if (response.ok) {
-        console.log('Reseña enviada correctamente');
-        return { success: true };
-      } else {
-        return { success: false, message: result.message || 'Error al enviar la reseña.' };
+      console.log("📌 Respuesta del backend:", result);
+  
+      if (!response.ok) {
+        console.error("❌ Error en la petición:", result);
+        return { success: false, message: result.message || "Error al enviar la reseña." };
       }
+  
+      console.log("📌 Reseña enviada con éxito:", result.resena);
+      return { success: true, message: "Reseña agregada con éxito." };
+  
     } catch (error) {
-      return { success: false, message: error.message };
+      console.error("❌ Error al enviar reseña:", error);
+      return { success: false, message: "Error al enviar la reseña." };
     }
   };
 
-  const favoritos = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/favoritos', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        return { success: true, favorites: data };
-      } else {
-        return { success: false, message: 'Error al obtener favoritos.' };
-      }
-    } catch (error) {
-      return { success: false, message: error.message };
+  const fetchUserFavoritos = async () => {
+    if (!token) {
+        console.error("❌ No hay token disponible para autenticar la solicitud.");
+        return;
     }
-  };
 
-  const addFavoritos = async (destinoId) => {
     try {
-      const response = await fetch('http://localhost:3000/api/favoritos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ destinoId }),
-      });
+        const response = await fetch("http://localhost:3000/api/mis_favoritos", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-      const result = await response.json();
+        const data = await response.json();
 
-      if (response.ok) {
-        setUser(prevUser => ({
+        if (!response.ok) {
+            throw new Error(data.error || "Error al obtener favoritos");
+        }
+
+        console.log("📌 Favoritos del usuario obtenidos:", data.favoritos);
+
+        setUser((prevUser) => ({
           ...prevUser,
-          favorites: [...prevUser.favorites, { id: destinoId }]
+          //favoritos: [...new Map([...prevUser.favoritos, ...data.favoritos].map(v => [v.id_viaje, v])).values()],
+          favoritos: data.favoritos || [], 
+  
         }));
-        console.log('Destino añadido a favoritos');
-        return { success: true };
-      } else {
-        return { success: false, message: result.message || 'Error al añadir a favoritos.' };
-      }
     } catch (error) {
-      return { success: false, message: error.message };
+        console.error("❌ Error al obtener favoritos del usuario:", error);
     }
-  };
+};
 
-  const removeFavoritos = async (destinoId) => {
+  const addFavoritos = async (id_viaje) => {
+    if (!token) {
+      console.error("❌ No hay token disponible para autenticar la solicitud.");
+      return;
+  }
+
+  try {
+    if (!Array.isArray(user.favoritos)) {
+      console.warn("⚠️ `user.favoritos` no es un array. Inicializando...");
+      setUser((prevUser) => ({ ...prevUser, favoritos: [] }));
+    }
+
+    if (user.favoritos.some((fav) => fav.id_viaje === id_viaje)) {
+      console.warn("⚠️ Este viaje ya está en favoritos.");
+      return;
+    }
+
+    const response = await fetch("http://localhost:3000/api/mis_favoritos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id_viaje }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Error al agregar favorito.");
+    }
+
+    console.log("✅ Favorito añadido con éxito:", data);
+
+    setUser((prevUser) => ({
+      ...prevUser,
+      favoritos: [...prevUser.favoritos, data.favorito],
+    }));
+
+  } catch (error) {
+    console.error("❌ Error al añadir favorito:", error.message);
+  }
+};
+
+  const removeFavoritos = async (id_viaje) => {
+
+    if (!token) {
+      console.error("❌ No hay token disponible para autenticar la solicitud.");
+      return;
+  }
+
+  console.log(`🗑 Intentando eliminar favorito con ID: ${id_viaje}`);
+
     try {
-      const response = await fetch(`http://localhost:3000/api/favoritos/${destinoId}`, {
+      const response = await fetch(`http://localhost:3000/api/mis_favoritos/${id_viaje}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -237,16 +314,87 @@ export const UserProvider = ({ children }) => {
 
       const result = await response.json();
 
-      if (response.ok) {
-        console.log('Destino eliminado de favoritos');
-        return { success: true };
-      } else {
-        return { success: false, message: result.message || 'Error al eliminar de favoritos.' };
-      }
+        if (!response.ok) {
+            console.error("❌ Error al eliminar favorito:", result);
+            return;
+        }
+
+        console.log("🗑 Favorito eliminado con éxito:", id_viaje);
+
+        setUser((prevUser) => ({
+          ...prevUser,
+          favoritos: Array.isArray(prevUser.favoritos)
+            ? prevUser.favoritos.filter((fav) => fav.id_viaje !== id_viaje)
+            : [],
+        }));
     } catch (error) {
-      return { success: false, message: error.message };
+      console.error("❌ Error en removeFavorito:", error);
     }
   };
+
+  const fetchUserReviews = async () => {
+     if (!token) {
+    console.error("❌ No hay token disponible para autenticar la solicitud.");
+    return;
+  }
+  
+    try {
+      const response = await fetch("http://localhost:3000/api/mis_resenas", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Error al obtener reseñas");
+      }
+  
+      console.log("📌 Reseñas del usuario obtenidas:", data.resenas);
+  
+      setUser((prevUser) => ({
+        ...prevUser,
+        resenas: data.resenas || [],
+      }));
+    } catch (error) {
+      console.error("❌ Error al obtener reseñas del usuario:", error);
+    }
+  };
+
+  const fetchUserviajes = async () => {
+    if (!token) {
+      console.error("❌ No hay token disponible para autenticar la solicitud.");
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://localhost:3000/api/mis_viajes", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(data.error || "Error al obtener viajes");
+      }
+  
+      console.log("📌 Viajes del usuario obtenidos:", data.viajes);
+  
+      setUser((prevUser) => ({
+        ...prevUser,
+        viajes: data.viajes || [], // 🔥 Guardamos los viajes en `user.viajes`
+      }));
+    } catch (error) {
+      console.error("❌ Error al obtener viajes del usuario:", error);
+    }
+  };
+  
+
 
 
 
@@ -259,9 +407,11 @@ export const UserProvider = ({ children }) => {
     login,
     logout,
     fetchUserProfile,
+    fetchUserviajes,
     updateUserProfile,
+    fetchUserReviews, 
     postReview,          
-    favoritos,      
+    fetchUserFavoritos,     
     addFavoritos,         
     removeFavoritos,    
   };

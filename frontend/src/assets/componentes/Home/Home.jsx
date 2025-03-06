@@ -11,6 +11,7 @@ import "./home.css";
 
 export const Home = () => {
   const { token, logout } = useUserContext();
+  const navigate = useNavigate();
 
   const handleLoginClick = () => {
     console.log("Login Button Clicked");

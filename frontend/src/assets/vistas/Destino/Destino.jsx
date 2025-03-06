@@ -5,18 +5,20 @@ import CardReseña from '../../componentes/CardReseña/CardReseña';
 
 export const Destino = () => {
   const { id } = useParams();
+  const viajeId = Number(id); // Convertimos `id` a número
+
+  console.log(`🔍 Renderizando Destino con viajeId:`, viajeId);
 
   return (
     <div>
       <div>
-        <DestinoDetailCard id={id} />
+        <DestinoDetailCard id={viajeId} />
       </div>
       <br />
       <hr style={{ border: '2px solid gray', margin: 'auto', width:'90%' }} />
-<br />
-
+      <br />
       <div className="reseñas">
-        <CardReseña viajeId={id} />
+        <CardReseña viajeId={viajeId} />
       </div>
     </div>
   );

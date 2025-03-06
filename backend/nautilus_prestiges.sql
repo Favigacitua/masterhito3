@@ -3,7 +3,8 @@ CREATE TABLE usuario (
     nombre VARCHAR(100) NOT NULL,
     apellido VARCHAR(100) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+     imagen TEXT
 );
 
 CREATE TABLE viajes (
@@ -82,19 +83,14 @@ INSERT INTO favoritos (id_usuario, id_viaje) VALUES
 (3, 3), -- Faviana: Alaska
 (4, 5); -- Carlos: Sudamérica
 
-INSERT INTO mis_resenas (id_usuario, id_viaje, valoracion, descripcion) VALUES
+INSERT INTO resenas (id_usuario, id_viaje, valoracion, descripcion) VALUES
 (1, 2, 5, 'Un viaje espectacular, vistas increíbles y excelente servicio.'),
 (2, 1, 4, 'Muy bonito, pero creo que podría haber mejorado la comida.'),
 (3, 3, 5, 'Una experiencia inolvidable, los glaciares fueron impresionantes.'),
 (4, 5, 3, 'El itinerario fue interesante, pero algunos lugares no cumplieron expectativas.'),
 (5, 4, 4, 'Hermosos paisajes y un crucero muy cómodo.');
 
-INSERT INTO resenas (nombre, apellido, id_viaje, valoracion, descripcion) VALUES
-('Fernanda', 'Pérez', 2, 5, 'Un viaje que superó mis expectativas.'),
-('Romina', 'Gacitúa', 1, 4, 'El crucero estuvo bien, aunque algunos días hubo mal clima.'),
-('Faviana', 'López', 3, 5, 'Recomendado al 100%, los glaciares son impresionantes.'),
-('Carlos', 'Reyes', 5, 3, 'Me gustó, aunque algunos detalles podrían mejorar.'),
-('Ana', 'Torres', 4, 4, 'Excelente servicio y paisajes espectaculares.');
+
 
 INSERT INTO mis_viajes (id_usuario, id_viaje) VALUES
 (1, 2), -- Fernanda: Mediterráneo

@@ -35,7 +35,7 @@ describe('POST /api/users', () => {
         apellido: 'Pérez',
         email: `juan${Date.now()}@example.com`,
         password: 'password123',
-        repetir_password: 'password123'
+        
       });
 
     expect(res.statusCode).toEqual(201);

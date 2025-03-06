@@ -8,7 +8,7 @@ const viajesRouter = Router()
 
 viajesRouter.get('/viajes', getViajesController);
 viajesRouter.get('/viajes/:id', getViajeIdController);
-viajesRouter.get('/mis-viajes', getMisViajesController);
+viajesRouter.get('/mis_viajes', getMisViajesController);
 viajesRouter.post('/favoritos',[schemaValidation(request.payload.favoritos.post.request)], postViajesFavoritosController)
 
 export { viajesRouter }
