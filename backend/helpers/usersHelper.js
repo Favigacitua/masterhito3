@@ -16,7 +16,7 @@ async function getUsers() {
 // 🔥 Obtener un usuario por ID (requiere autenticación)
 async function getUserById(id) {
   try {
-    const consulta = "SELECT id, nombre, apellido, email FROM usuario WHERE id = $1";
+    const consulta = "SELECT id, nombre, apellido, email, imagen FROM usuario WHERE id = $1";
     const { rows } = await pool.query(consulta, [id]);
 
     if (rows.length === 0) {

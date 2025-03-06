@@ -10,7 +10,7 @@ function CardViaje({ viaje }) {
 
   return (
     <Card className='cardviaje' style={{ width: '18rem', minWidth: '18rem' }}>
-      <Card.Img variant="top" src={`http://localhost:3000/uploads/${viaje.imagen}`} alt={viaje.nombre} />
+      <Card.Img variant="top"   src={viaje.imagen}  alt={viaje.nombre} />
       <Card.Body>
         <Card.Title >{viaje.nombre}</Card.Title>
         <Card.Text>{viaje.descripcion}</Card.Text>

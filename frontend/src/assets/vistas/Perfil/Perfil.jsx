@@ -148,19 +148,16 @@ export const Perfil = () => {
         <div>
           <div className="imagendeperfil">
             <img
-              src={
-                user?.imagen
-                  ? `http://localhost:3000/uploads/${user.imagen}`
-                  : "/sinimagen.png"
-              }
+               src={user.imagen || "/sinimagen.png"}
               alt="Imagen de perfil"
+              onError={(e) => e.target.src = "/sinimagen.png"} 
             />
           </div>
         </div>
       </div>
       <div className="misexperiencias">
         <div className="misdestinos" ref={misDestinos}>
-          <h3 style={{ color: "#0DBCAD" }}>Mis Destinos</h3>
+          <h3 style={{ color: "#0DBCAD", padding:"4rem"}}>Mis Destinos</h3>
 
           <div className="destinos-container">
             {viajes.length > 0 ? (
@@ -172,8 +169,8 @@ export const Perfil = () => {
                 >
                   <Card.Img
                     variant="top"
-                    src={`http://localhost:3000/uploads/${viaje.imagen}`}
-                    alt={viaje.nombre}
+                    src={viaje.imagen}  alt={viaje.nombre}
+                    
                   />
                   <Card.Body>
                     <Card.Title>{viaje.nombre}</Card.Title>
@@ -208,7 +205,7 @@ export const Perfil = () => {
         </div>
 
         <div className="mispublicaciones" ref={mispublicaciones}>
-          <h3 style={{ color: "#0DBCAD" }}>Mis Publicaciones</h3>
+          <h3 style={{ color: "#0DBCAD",  padding:"4rem" }}>Mis Publicaciones</h3>
           <div className="reseñas-container">
             {reseñas.length > 0 ? (
               reseñas.map((resena) => (

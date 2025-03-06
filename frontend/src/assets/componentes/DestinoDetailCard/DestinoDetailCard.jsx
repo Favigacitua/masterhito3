@@ -11,7 +11,7 @@ export const DestinoDetailCard = () => {
   const { id } = useParams();  
   const { addFavoritos } = useContext(UserContext); 
   const [viaje, setViaje] = useState(null);
-
+  const [mensajeFavorito, setMensajeFavorito] = useState("")
   
 
   useEffect(() => {
@@ -37,12 +37,14 @@ export const DestinoDetailCard = () => {
   
   const handleAddToFavorites = () => {
     addFavoritos(viaje.id);  
+    setMensajeFavorito("✅ Favorito añadido con éxito");
+    setTimeout(() => setMensajeFavorito(""), 3000);
   };
 
   return (
     <div className="destino-detail-card">
       {viaje?.imagen ? (
-        <img src={`http://localhost:3000/uploads/${viaje.imagen}`} alt={viaje.nombre} className="destino-detail-image" />
+        <img  src={viaje.imagen}  alt={viaje.nombre} className="destino-detail-image" />
       ) : (
         <p>No hay imagen disponible</p>
       )}
@@ -68,6 +70,11 @@ export const DestinoDetailCard = () => {
         <br />
         <p><strong>Características:</strong> {Array.isArray(viaje?.features) ? viaje.features.join(", ") : "Características no disponibles"}</p>
         
+        {mensajeFavorito && (
+        <p style={{ color: "green", fontWeight: "bold", margin: "10px 0" }}>
+          {mensajeFavorito}
+        </p>
+         )}
         <Button
           className="añadirfavoritos"
           style={{ backgroundColor: "#0DBCAD", border: "2px solid #0DBCAD", color: "white", margin: '1rem' }}

@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import { router as userRouter } from './routes/users.js';
 import { viajesRouter } from "./routes/viajes.js";
 import { resenasRouter } from "./routes/resenas.js";
+import contactoRouter from "./routes/contacto.js"
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api", resenasRouter);
 app.use("/api", viajesRouter);
 app.use("/api", userRouter);
+app.use(contactoRouter);
 
 
 

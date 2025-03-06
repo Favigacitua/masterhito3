@@ -9,20 +9,28 @@ export const Context = ({ children }) => {
   const [filtroDestino, setFiltroDestino] = useState('');
   const [filtroFecha, setFiltroFecha] = useState(null);
   const [mensajeEnviado, setMensajeEnviado] = useState(null);
+  const [viajesOriginales, setViajesOriginales] = useState([]);
+  
+
   const [resenas, setResenas] = useState({});
   const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await fetch("http://localhost:3000/api/viajes");  // 🔹 QUITADO "/" extra en la URL
         const data = await response.json();
         console.log("📌 Viajes cargados desde backend:", data);
 
         if (Array.isArray(data)) {
           setViajes(data);
+          setViajesOriginales(data);
+          console.log("✅ viajesOriginales cargados:", data);
         } else if (data.viajes && Array.isArray(data.viajes)) {
-          setViajes(data.viajes); // Ajuste si la API devuelve un objeto con `viajes`
+          setViajes(data.viajes); 
+          setViajesOriginales(data.viajes);
+          console.log("✅ viajesOriginales cargados:", data.viajes);
         } else {
           console.error("❌ Formato inesperado de viajes en la API:", data);
         }
@@ -76,15 +84,38 @@ export const Context = ({ children }) => {
 
   
   const resetFiltros = () => {
-    setFiltroDestino(''); 
+    console.log("🚨 Ejecutando resetFiltros()");
+    setFiltroDestino(""); 
     setFiltroFecha(null); 
-    setViajes(viajes); 
-  };
 
-  
-  const resetViajes = () => {
-    setViajes(viajes);
-  };
+    // 🔹 Verificamos si viajesOriginales es un array válido antes de intentar usarlo
+    if (!Array.isArray(viajesOriginales) || viajesOriginales.length === 0) {
+        console.warn("⚠ No hay datos en viajesOriginales, recargando desde API...");
+        
+        fetch("http://localhost:3000/api/viajes")
+            .then(response => response.json())
+            .then(data => {
+                console.log("📌 Datos recargados desde API:", data);
+                
+                if (Array.isArray(data)) {
+                    setViajes(data);
+                    setViajesOriginales(data);  // 🔥 Asegurar que viajesOriginales se actualiza aquí también
+                } else if (data.viajes && Array.isArray(data.viajes)) {
+                    setViajes(data.viajes);
+                    setViajesOriginales(data.viajes);
+                } else {
+                    console.error("❌ Formato inesperado de viajes en la API:", data);
+                }
+            })
+            .catch(error => console.error("❌ Error al recuperar los viajes:", error));
+
+        return;  // 🔹 Salimos para evitar que se intente restaurar una lista vacía
+    }
+
+    console.log("✅ Restaurando viajes desde viajesOriginales...");
+    setViajes([...viajesOriginales]);  // 🔹 Restauramos la lista completa de viajes
+};
+
 
  
   useEffect(() => {
@@ -92,6 +123,16 @@ export const Context = ({ children }) => {
       aplicarFiltros();
     }
   }, [filtroDestino, filtroFecha]);
+
+
+  useEffect(() => {
+    console.log("📌 Detectando cambio de ruta en Context:", location.pathname);
+    if (location.pathname === "/destinos") {  
+      console.log("✅ Ejecutando resetFiltros en Context...");
+      resetFiltros()
+     
+    }
+  }, [location]);
 
 
 
@@ -157,15 +198,17 @@ export const Context = ({ children }) => {
     actualizarFiltroFecha,
     resenas,
     resetFiltros,
-    resetViajes,
     enviarFormularioContacto, 
     mensajeEnviado,
     fetchResenasPorViaje
+    
 
   };
 
   return (
-    <MyContext.Provider value={globalState}>
+    <MyContext.Provider value={globalState}
+    >
+      
       {children}
     </MyContext.Provider>
   );

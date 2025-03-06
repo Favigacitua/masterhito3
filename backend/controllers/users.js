@@ -33,6 +33,10 @@ const getUserByIdController = async (req, res) => {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
+    if (user.imagen) {
+      user.imagen = `http://localhost:3000/uploads/${user.imagen}`;
+    }
+
     res.status(200).json(user);
   } catch (error) {
     console.error("❌ Error en GET /users/:id:", error.message);

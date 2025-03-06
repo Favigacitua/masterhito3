@@ -25,7 +25,7 @@ const Favoritos = () => {
   if (!Array.isArray(favoritos)) {
     console.warn("⚠️ `favoritos` no es un array, inicializándolo como vacío.");
     return <p>Cargando favoritos...</p>;
-}
+  }
 
   return (
     <div>
@@ -52,7 +52,7 @@ const Favoritos = () => {
                 <Card className="cardviaje" style={{ width: "18rem" }}>
                   <Card.Img
                     variant="top"
-                    src={`http://localhost:3000/uploads/${viaje.imagen}`}
+                    src={viaje.imagen}
                     alt={viaje.nombre}
                   />
                   <Card.Body>
@@ -63,27 +63,31 @@ const Favoritos = () => {
                       <strong>Precio por persona:</strong> ${viaje.precio}
                     </p>
                     {/* ✅ Botón para eliminar de favoritos */}
-                    
-
                   </Card.Body>
-                  <div className="linkdestino">
-                  <button
-  style={{
-    backgroundColor: "red",
-    color: "white",
-    cursor: "pointer",
-    border: "none",
-    padding: "0.5rem 1rem"
-  }}
-  onClick={(e) => {
-    e.stopPropagation();
-    console.log("🔴 Clic detectado en el botón de eliminar"); // 🔍 Esto debería aparecer en la consola
-    console.log("🗑 Eliminando favorito con ID:", viaje.id_viaje);
-    removeFavoritos(viaje.id_viaje);
-  }}
->
-  X
-</button>
+                  <div className="linkdestino" style={{ display:"flex", justifyContent:"space-between", alignItems:"center",margin:"0.5rem"}}>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        cursor: "pointer",
+                        border: "none",
+                        padding: "0.5rem 1rem",
+                        borderRadius:"10px"
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        console.log(
+                          "🔴 Clic detectado en el botón de eliminar"
+                        ); // 🔍 Esto debería aparecer en la consola
+                        console.log(
+                          "🗑 Eliminando favorito con ID:",
+                          viaje.id_viaje
+                        );
+                        removeFavoritos(viaje.id_viaje);
+                      }}
+                    >
+                      X
+                    </button>
                     <Card.Link as={NavLink} to={`/viaje/${viaje.id_viaje}`}>
                       Ver más información
                     </Card.Link>

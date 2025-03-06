@@ -9,18 +9,22 @@ import { useLocation } from 'react-router-dom';
 import './formularioFecha.css';
 
 const FormularioFecha = () => {
-  const { actualizarFiltroDestino, actualizarFiltroFecha} = useContext(MyContext);
+  const {actualizarFiltroDestino, actualizarFiltroFecha } = useContext(MyContext);
   const [destino, setDestino] = useState('');
-  const [fechaInicio, setFechaInicio] = useState(null);
+  const [fechaInicio, setFechaInicio] = useState(null); 
   const location = useLocation(); 
+  console.log("🌍 Ruta actual en FormularioFecha:", location.pathname);
 
   
   useEffect(() => {
-    setDestino(''); 
-    setFechaInicio(null); 
-    actualizarFiltroDestino(''); 
-    actualizarFiltroFecha(null);
-    
+      console.log("Ruta actual:", location.pathname); 
+    if (location.pathname === "/destinos") {
+      console.log("Reseteando filtros..."); 
+      setDestino("");  // Resetea el input del destino
+      setFechaInicio(null);  // Resetea la fecha seleccionada
+      actualizarFiltroDestino("");  // Borra el filtro en el contexto
+      actualizarFiltroFecha(null);  // Borra la fecha en el contexto
+    }
   }, [location]);
 
   const handleDestinoChange = (e) => {

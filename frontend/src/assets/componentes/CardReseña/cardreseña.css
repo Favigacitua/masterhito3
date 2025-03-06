@@ -1,11 +1,8 @@
 .reseñas-container {
-    display: grid;
-    grid-template-columns: 1fr; 
-    gap: 16px;
-    padding: 20px; 
-   margin: auto;
-   width: 50%;
-   align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+ gap: 20px;
+ justify-content: center;
   }
   
   .reseñas {

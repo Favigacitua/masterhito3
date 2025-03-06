@@ -9,33 +9,44 @@ export const CardReseña = ({ viajeId }) => {
   const [resenasViaje, setResenasViaje] = useState([]);
 
   useEffect(() => {
+    console.log(`🛠️ CardReseña recibida con viajeId:`, viajeId);
+
     if (!viajeId) { 
       console.warn("⚠️ No se recibió un viajeId en CardReseña.");
-      return;}  // ✅ Aseguramos que haya un ID válido
-     
+      return;
+    }
+
+    if (!resenas || typeof resenas !== "object") {
+      console.warn("⚠️ resenas no está definido o no es un objeto, no se puede acceder.");
+      return;
+    }
 
     if (!resenas[viajeId]) {
       console.log(`🔍 Buscando reseñas en: http://localhost:3000/api/resenas/viaje/${viajeId}`);
       fetchResenasPorViaje(viajeId);
     }
-  }, [viajeId, fetchResenasPorViaje, resenas]);
-
-  useEffect(() => {
-    console.log("📌 resenas actualizado:", resenas);
-    if (resenas && resenas[viajeId]) {
-      console.log("📌 Nuevas reseñas detectadas:", resenas[viajeId]);
-      setResenasViaje(resenas[viajeId]); // Se actualiza correctamente
-    }
-  }, [resenas, viajeId]); 
+}, [viajeId, fetchResenasPorViaje, resenas]);
 
 
- if (!resenas || typeof resenas !== "object") {
-    console.error("❌ resenas es undefined o no es un objeto. No se puede acceder a las reseñas.");
+
+useEffect(() => {
+  if (!viajeId || !resenas || typeof resenas !== "object") {
+    console.warn("⚠️ No se pueden cargar las reseñas porque resenas o viajeId no están definidos.");
     return;
   }
-  if (!resenasViaje || resenasViaje.length === 0) {
-    return <p>Cargando reseñas...</p>;
+
+  if (resenas[viajeId]) {
+    console.log("📌 Nuevas reseñas detectadas:", resenas[viajeId]);
+    setResenasViaje(resenas[viajeId]); 
   }
+}, [resenas, viajeId]);
+
+if (!resenasViaje || resenasViaje.length === 0) {
+  return <p>No hay reseñas para este viaje.</p>;
+}
+
+
+
   return (
     <div className="reseñas-container">
       {resenasViaje.length > 0 ? (
