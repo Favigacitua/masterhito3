@@ -87,7 +87,10 @@ export const UserProvider = ({ children }) => {
       if (response.ok) {
         setToken(data.token); 
         setUser(data.user);
+        
         console.log("📌 Usuario guardado en el contexto:", data.user); 
+        console.log("🔍 Estado actualizado de `user` en UserContext:", user); 
+
         return { success: true }; 
       } else {
         return { success: false, message: data.message || data.error || 'Error desconocido' };
@@ -264,7 +267,7 @@ export const UserProvider = ({ children }) => {
     }
 
     if (user.favoritos.some((fav) => fav.id_viaje === id_viaje)) {
-      console.warn("⚠️ Este viaje ya está en favoritos.");
+      alert("⚠️ Este viaje ya está en favoritos.");
       return;
     }
 

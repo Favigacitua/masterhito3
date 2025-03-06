@@ -29,8 +29,13 @@ export const EditarPerfil = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.password.trim()) {
+      alert("⚠️ Debes ingresar una contraseña para actualizar el perfil.");
+      return;
+    }
+
     if (formData.password !== formData.repetirPassword) {
-      alert("Las contraseñas no coinciden");
+      alert(" ⚠️ Las contraseñas no coinciden");
       return;
     }
 
