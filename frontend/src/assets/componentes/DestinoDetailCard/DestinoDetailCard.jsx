@@ -7,9 +7,9 @@ import Button from "react-bootstrap/Button";
 import "./destinodetailcard.css";
 
 export const DestinoDetailCard = () => {
-  const { viajes } = useContext(MyContext);
+  const { viajes} = useContext(MyContext);
   const { id } = useParams();
-  const { addFavoritos, user } = useContext(UserContext);
+  const { addFavoritos, user,  token  } = useContext(UserContext);
   const [viaje, setViaje] = useState(null);
   const [mensajeFavorito, setMensajeFavorito] = useState("");
 
@@ -40,6 +40,14 @@ export const DestinoDetailCard = () => {
       setTimeout(() => setMensajeFavorito(""), 3000);
       return;
     }
+
+
+  if (!token) {
+    console.error(" No hay token disponible.");
+    setMensajeFavorito("Debes iniciar sesión para añadir favoritos.");
+    setTimeout(() => setMensajeFavorito(""), 3000);
+    return;
+  }
   
     addFavoritos(viaje.id);
     setMensajeFavorito("✅ Favorito añadido con éxito");

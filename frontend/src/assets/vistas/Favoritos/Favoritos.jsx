@@ -98,7 +98,7 @@ const Favoritos = () => {
             ))}
           </Row>
         ) : (
-          <p>No tienes viajes favoritos aún :(</p>
+          <p style={{padding:"2rem"}}>No tienes viajes favoritos aún :(</p>
         )}
      
       <div className="descargalaapp">

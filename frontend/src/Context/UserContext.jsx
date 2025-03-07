@@ -41,6 +41,7 @@ export const UserProvider = ({ children }) => {
     } else {
       localStorage.removeItem('user');
     }
+    console.log("Token actual:", localStorage.getItem("token"));
   }, [token, user]);
 
 
