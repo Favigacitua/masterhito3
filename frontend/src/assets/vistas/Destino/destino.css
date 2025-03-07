@@ -1,0 +1,16 @@
+.reseñas {
+    display: flex !important;
+    flex-wrap: wrap !important;   /* Permite que las tarjetas pasen a otra fila si no caben */
+    justify-content: space-evenly !important;  /* Espacio uniforme entre las tarjetas */
+    align-items: flex-start; /* Asegura que estén alineadas en la parte superior */
+    gap: 1rem;  /* Espaciado entre tarjetas */
+    
+  }
+
+  .resena {
+    width: 100%;
+    display: flex !important;
+    flex-direction: row !important; /* Asegura que las tarjetas estén en fila */
+    flex-wrap: wrap !important;  /* Permite que pasen a la siguiente línea si no caben */
+    justify-content: center; /* Centra las tarjetas si hay espacio */
+  }

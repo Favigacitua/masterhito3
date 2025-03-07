@@ -9,7 +9,7 @@ async function getViajes() {
         console.log("📌 Viajes obtenidos desde la base de datos:", result.rows);
         return result.rows;
       } catch (error) {
-        console.error("❌ Error al obtener viajes:", error);
+        console.error(" Error al obtener viajes:", error);
         throw new Error("Error interno del servidor");
       }
 }
@@ -22,20 +22,20 @@ async function getViajeId(id) {
 }
 
 async function getMisViajes(authHeader) {
-    // Verifica que el token sea válido y obtiene el id del usuario
+    
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         throw new Error("Token de autenticación requerido");
     }
-    const extraerToken = authHeader.split(" ")[1]; // Extraemos el token real
+    const extraerToken = authHeader.split(" ")[1]; 
 
     let usuarioId;
     try {
         const decoded = jwt.verify(extraerToken, secretKey);
-        usuarioId = decoded.id; // ✅ Extraemos el ID del usuario desde el token
+        usuarioId = decoded.id; 
     } catch (error) {
         throw new Error("Token inválido o expirado");
     }
-    // Obtener la información completa de los viajes del usuario
+    
     const consultaViajes = `
         SELECT v.id, v.nombre, v.descripcion, v.precio, v.imagen
         FROM mis_viajes mv

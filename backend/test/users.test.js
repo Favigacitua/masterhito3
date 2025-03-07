@@ -3,18 +3,7 @@ import app from '../index.js';
 import pool from '../config/dbConnection.js';
 import bcrypt from 'bcrypt';
 
-// describe('Rutas protegidas con autenticación', () => {
 
-//   it('GET /api/users debería devolver los datos del usuario autenticado', async () => {
-//     const res = await request(app)
-//       .get('/api/users')
-//       .set('Authorization', `Bearer ${token}`);
-
-//     expect(res.statusCode).toEqual(200);
-//     expect(res.body).toHaveProperty('email', userEmail);
-//   });
-
-// });
 
 describe('POST /api/users', () => {
 
@@ -52,10 +41,10 @@ describe('GET /api/users/:id', () => {
   let userId;
 
   beforeEach(async () => {
-    console.log("🔍 Eliminando usuario existente solo para este test...");
+    console.log(" Eliminando usuario existente solo para este test...");
     await pool.query("DELETE FROM usuario WHERE email = $1", [userEmail]);
 
-    console.log("🔍 Creando usuario de prueba con contraseña encriptada...");
+    console.log(" Creando usuario de prueba con contraseña encriptada...");
     const hashedPassword = await bcrypt.hash(userPassword, 10);
 
     const result = await pool.query(
@@ -63,8 +52,8 @@ describe('GET /api/users/:id', () => {
       ["Juan", "Pérez", userEmail, hashedPassword]
     );
 
-    userId = result.rows[0].id; // 🔥 Guardamos el ID del usuario creado
-    console.log("✅ Usuario de prueba creado con ID:", userId);
+    userId = result.rows[0].id; 
+    console.log(" Usuario de prueba creado con ID:", userId);
 
     console.log("🔍 Intentando login con:", userEmail);
     const loginResponse = await request(app)
@@ -74,19 +63,19 @@ describe('GET /api/users/:id', () => {
     console.log("🔍 Respuesta del login en Jest:", loginResponse.statusCode, loginResponse.body);
 
     if (loginResponse.statusCode !== 200) {
-      throw new Error("❌ No se pudo autenticar en el test.");
+      throw new Error(" No se pudo autenticar en el test.");
     }
 
     token = loginResponse.body.token;
 
     if (!token) {
-      throw new Error("❌ No se pudo obtener un token válido.");
+      throw new Error(" No se pudo obtener un token válido.");
     }
   });
 
   it('Debería devolver los datos del usuario solicitado', async () => {
     const res = await request(app)
-      .get(`/api/users/${userId}`) // 🔥 Usamos el ID generado dinámicamente
+      .get(`/api/users/${userId}`) 
       .set('Authorization', `Bearer ${token}`);
 
     console.log("🔍 Respuesta del servidor para usuario válido:", res.statusCode, res.body);

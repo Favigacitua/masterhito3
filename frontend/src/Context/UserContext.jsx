@@ -82,14 +82,14 @@ export const UserProvider = ({ children }) => {
 
       const data = await response.json();
 
-      console.log("📌 Respuesta del backend:", data.user);
+      console.log(" Respuesta del backend:", data.user);
 
       if (response.ok) {
         setToken(data.token); 
         setUser(data.user);
         
-        console.log("📌 Usuario guardado en el contexto:", data.user); 
-        console.log("🔍 Estado actualizado de `user` en UserContext:", user); 
+        console.log(" Usuario guardado en el contexto:", data.user); 
+        console.log(" Estado actualizado de `user` en UserContext:", user); 
 
         return { success: true }; 
       } else {
@@ -112,7 +112,7 @@ export const UserProvider = ({ children }) => {
     try {
 
       if (!token) {
-        console.warn("⚠️ No hay token disponible, esperando autenticación...");
+        console.warn(" No hay token disponible, esperando autenticación...");
         return;
       }
       const response = await fetch('http://localhost:3000/api/perfil', {
@@ -129,7 +129,7 @@ export const UserProvider = ({ children }) => {
         throw new Error(data.error || "Error al obtener perfil");
       }
 
-      console.log("📌 Perfil recibido:", data);
+      console.log(" Perfil recibido:", data);
 
       setUser((prevUser) => ({
         ...prevUser,
@@ -138,7 +138,7 @@ export const UserProvider = ({ children }) => {
         apellido: data.apellido,
         email: data.email,
         imagen: data.imagen,
-        token: token, // 🔥 Aseguramos que el token se guarda correctamente
+        token: token, 
       }));
       
     } catch (error) {
@@ -180,12 +180,12 @@ export const UserProvider = ({ children }) => {
   const postReview = async (id_viaje, valoracion, descripcion) => {
 
     if (!token || !user || !user.id) {
-      console.error("❌ No hay token o usuario disponible.");
+      console.error(" No hay token o usuario disponible.");
       return { success: false, message: "No estás autenticado." };
     }
 
     console.log("📌 Datos enviados al backend:", { 
-      id_viaje: Number(id_viaje),  // 🔥 Convertimos a número
+      id_viaje: Number(id_viaje),  
       valoracion: Number(valoracion),       
       descripcion 
     });
@@ -205,25 +205,25 @@ export const UserProvider = ({ children }) => {
       });
   
       const result = await response.json();
-      console.log("📌 Respuesta del backend:", result);
+      console.log(" Respuesta del backend:", result);
   
       if (!response.ok) {
-        console.error("❌ Error en la petición:", result);
+        console.error(" Error en la petición:", result);
         return { success: false, message: result.message || "Error al enviar la reseña." };
       }
   
-      console.log("📌 Reseña enviada con éxito:", result.resena);
+      console.log(" Reseña enviada con éxito:", result.resena);
       return { success: true, message: "Reseña agregada con éxito." };
   
     } catch (error) {
-      console.error("❌ Error al enviar reseña:", error);
+      console.error(" Error al enviar reseña:", error);
       return { success: false, message: "Error al enviar la reseña." };
     }
   };
 
   const fetchUserFavoritos = async () => {
     if (!token) {
-        console.error("❌ No hay token disponible para autenticar la solicitud.");
+        console.error(" No hay token disponible para autenticar la solicitud.");
         return;
     }
 
@@ -241,7 +241,7 @@ export const UserProvider = ({ children }) => {
             throw new Error(data.error || "Error al obtener favoritos");
         }
 
-        console.log("📌 Favoritos del usuario obtenidos:", data.favoritos);
+        console.log(" Favoritos del usuario obtenidos:", data.favoritos);
 
         setUser((prevUser) => ({
           ...prevUser,
@@ -250,24 +250,24 @@ export const UserProvider = ({ children }) => {
   
         }));
     } catch (error) {
-        console.error("❌ Error al obtener favoritos del usuario:", error);
+        console.error(" Error al obtener favoritos del usuario:", error);
     }
 };
 
   const addFavoritos = async (id_viaje) => {
     if (!token) {
-      console.error("❌ No hay token disponible para autenticar la solicitud.");
+      console.error(" No hay token disponible para autenticar la solicitud.");
       return;
   }
 
   try {
     if (!Array.isArray(user.favoritos)) {
-      console.warn("⚠️ `user.favoritos` no es un array. Inicializando...");
+      console.warn(" `user.favoritos` no es un array. Inicializando...");
       setUser((prevUser) => ({ ...prevUser, favoritos: [] }));
     }
 
     if (user.favoritos.some((fav) => fav.id_viaje === id_viaje)) {
-      alert("⚠️ Este viaje ya está en favoritos.");
+      alert(" Este viaje ya está en favoritos.");
       return;
     }
 
@@ -294,18 +294,18 @@ export const UserProvider = ({ children }) => {
     }));
 
   } catch (error) {
-    console.error("❌ Error al añadir favorito:", error.message);
+    console.error(" Error al añadir favorito:", error.message);
   }
 };
 
   const removeFavoritos = async (id_viaje) => {
 
     if (!token) {
-      console.error("❌ No hay token disponible para autenticar la solicitud.");
+      console.error(" No hay token disponible para autenticar la solicitud.");
       return;
   }
 
-  console.log(`🗑 Intentando eliminar favorito con ID: ${id_viaje}`);
+  console.log(` Intentando eliminar favorito con ID: ${id_viaje}`);
 
     try {
       const response = await fetch(`http://localhost:3000/api/mis_favoritos/${id_viaje}`, {
@@ -318,7 +318,7 @@ export const UserProvider = ({ children }) => {
       const result = await response.json();
 
         if (!response.ok) {
-            console.error("❌ Error al eliminar favorito:", result);
+            console.error(" Error al eliminar favorito:", result);
             return;
         }
 
@@ -331,13 +331,13 @@ export const UserProvider = ({ children }) => {
             : [],
         }));
     } catch (error) {
-      console.error("❌ Error en removeFavorito:", error);
+      console.error(" Error en removeFavorito:", error);
     }
   };
 
   const fetchUserReviews = async () => {
      if (!token) {
-    console.error("❌ No hay token disponible para autenticar la solicitud.");
+    console.error(" No hay token disponible para autenticar la solicitud.");
     return;
   }
   
@@ -355,20 +355,20 @@ export const UserProvider = ({ children }) => {
         throw new Error(data.error || "Error al obtener reseñas");
       }
   
-      console.log("📌 Reseñas del usuario obtenidas:", data.resenas);
+      console.log(" Reseñas del usuario obtenidas:", data.resenas);
   
       setUser((prevUser) => ({
         ...prevUser,
         resenas: data.resenas || [],
       }));
     } catch (error) {
-      console.error("❌ Error al obtener reseñas del usuario:", error);
+      console.error(" Error al obtener reseñas del usuario:", error);
     }
   };
 
   const fetchUserviajes = async () => {
     if (!token) {
-      console.error("❌ No hay token disponible para autenticar la solicitud.");
+      console.error(" No hay token disponible para autenticar la solicitud.");
       return;
     }
   
@@ -386,20 +386,20 @@ export const UserProvider = ({ children }) => {
         throw new Error(data.error || "Error al obtener viajes");
       }
   
-      console.log("📌 Viajes del usuario obtenidos:", data.viajes);
+      console.log(" Viajes del usuario obtenidos:", data.viajes);
   
       setUser((prevUser) => ({
         ...prevUser,
-        viajes: data.viajes || [], // 🔥 Guardamos los viajes en `user.viajes`
+        viajes: data.viajes || [], 
       }));
     } catch (error) {
-      console.error("❌ Error al obtener viajes del usuario:", error);
+      console.error(" Error al obtener viajes del usuario:", error);
     }
   };
   
   const deleteResena = async (idResena) => {
     if (!token) {
-      console.error("❌ No hay token disponible para autenticar la solicitud.");
+      console.error(" No hay token disponible para autenticar la solicitud.");
       return { success: false, message: "No estás autenticado." };
     }
   
@@ -417,9 +417,9 @@ export const UserProvider = ({ children }) => {
         throw new Error(data.error || "Error al eliminar la reseña.");
       }
   
-      console.log("🗑️ Reseña eliminada:", data);
+      console.log(" Reseña eliminada:", data);
   
-      // Actualizar el estado del usuario eliminando la reseña localmente
+      
       setUser((prevUser) => ({
         ...prevUser,
         resenas: prevUser.resenas.filter((resena) => resena.id !== idResena),
@@ -427,7 +427,7 @@ export const UserProvider = ({ children }) => {
   
       return { success: true, message: "Reseña eliminada correctamente." };
     } catch (error) {
-      console.error("❌ Error al eliminar reseña:", error.message);
+      console.error(" Error al eliminar reseña:", error.message);
       return { success: false, message: "Error al eliminar la reseña." };
     }
   };

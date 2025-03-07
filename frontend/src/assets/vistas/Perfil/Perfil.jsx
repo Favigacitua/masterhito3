@@ -28,19 +28,19 @@ export const Perfil = () => {
   const [reseñas, setReseñas] = useState([]);
 
   useEffect(() => {
-    console.log("📌 Cargando perfil desde el backend...");
+    console.log(" Cargando perfil desde el backend...");
     fetchUserProfile();
   }, []);
 
   useEffect(() => {
     if (!token) {
-      console.warn("⚠️ No hay token disponible todavía. Esperando...");
+      console.warn(" No hay token disponible todavía. Esperando...");
       return;
     }
 
-    console.log("📌 Token encontrado, cargando datos del usuario...");
-    fetchUserReviews(); // 🔥 Cargar reseñas del usuario
-    fetchUserviajes(); // 🔥 Cargar viajes del usuario
+    console.log(" Token encontrado, cargando datos del usuario...");
+    fetchUserReviews(); 
+    fetchUserviajes(); 
   }, [token]);
 
   useEffect(() => {
@@ -78,8 +78,8 @@ export const Perfil = () => {
     }
 
     console.log("📌 Enviando reseña con:", {
-      id_viaje: Number(destino), // 🔥 Convertir a número
-      valoracion: Number(calificacion), // 🔥 Convertir a número
+      id_viaje: Number(destino), 
+      valoracion: Number(calificacion), 
       descripcion: comentario
     });
 
@@ -90,9 +90,9 @@ export const Perfil = () => {
       setDestino("");
       setCalificacion("");
       setComentario("");
-      fetchUserReviews(); // 🔥 Recargar las reseñas del usuario
+      fetchUserReviews(); 
     } else {
-      alert(`❌ Error: ${resultado?.message || "Error desconocido al enviar la reseña."}`);
+      alert(` Error: ${resultado?.message || "Error desconocido al enviar la reseña."}`);
     }
   };
 
@@ -102,15 +102,16 @@ export const Perfil = () => {
 
     const resultado = await deleteResena(id);
     if (resultado.success) {
-      alert("✅ Reseña eliminada correctamente.");
-      fetchUserReviews(); // 🔥 Recargar las reseñas después de eliminar
+      alert(" Reseña eliminada correctamente.");
+      fetchUserReviews(); 
     } else {
-      alert(`❌ Error: ${resultado.message}`);
+      alert(` Error: ${resultado.message}`);
     }
   };
 
 
   return (
+    <div className="container-fluid" style={{padding:"0px"}}>
     <div className="perfilcontainer">
       <div className="datos">
         <h1
@@ -129,7 +130,7 @@ export const Perfil = () => {
               backgroundColor: "lightgrey",
               border: "2px solid grey",
               color: "#0DBCAD",
-              margin: "1rem",
+              margin: "0.5rem",
             }}
             onClick={() => scrollToSection(misDestinos)}
           >
@@ -141,7 +142,7 @@ export const Perfil = () => {
               backgroundColor: "lightgrey",
               border: "2px solid grey",
               color: "#0DBCAD",
-              margin: "1rem",
+              margin: "0.5rem",
             }}
             onClick={() => scrollToSection(mispublicaciones)}
           >
@@ -152,7 +153,7 @@ export const Perfil = () => {
             style={{
               backgroundColor: "#0DBCAD",
               border: "2px solid #0DBCAD",
-              margin: "1rem",
+              margin: "0.5rem",
             }}
             as={NavLink}
             to="/editarperfil"
@@ -160,6 +161,7 @@ export const Perfil = () => {
             Editar perfil
           </Button>
         </div>
+        
         <div>
           <div className="imagendeperfil">
             <img
@@ -284,7 +286,7 @@ export const Perfil = () => {
             <Form.Label>Destino</Form.Label>
             <Form.Select
               value={destino}
-              onChange={(e) => setDestino(Number(e.target.value))} // 🔥 Convertir a número
+              onChange={(e) => setDestino(Number(e.target.value))} 
             >
               <option value="">Selecciona un destino</option>
               {viajes.map((viaje) => (
@@ -324,6 +326,7 @@ export const Perfil = () => {
           </Button>
         </Form>
       </div>
+    </div>
     </div>
   );
 };

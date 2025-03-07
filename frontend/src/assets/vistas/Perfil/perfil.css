@@ -11,20 +11,28 @@
 }
 
 .botonesperfil {
-    display: flex;   
+    display: flex;
+    flex-wrap: wrap;   
     margin: auto;
+    padding-bottom: 2rem;   
+    
 }
 
+
 .imagendeperfil {
-    width: 100vw;
+    width: 100%; 
+   
     height: auto;
+    display: flex;
+    justify-content: center; 
+    margin: 0 auto;
 }
 
 .imagendeperfil img {
-    width: 100vw;
-    margin:'auto'
+    width: 100%; 
+    height: auto;
+    
 }
-
 
 .perfilcontainer {
     width: 100vw;

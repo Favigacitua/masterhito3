@@ -23,7 +23,7 @@ export const Home = () => {
   const handleShow = () => setShowOffcanvas(true);
 
   return (
-    <div className="homestyle">
+    <div className="homestyle" style={{width:"100vw"}}>
       <div>
         <Navbar
           expand="md"

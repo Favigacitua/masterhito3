@@ -69,7 +69,7 @@ async function postResenas(id_usuario, id_viaje, valoracion, descripcion) {
         const { rows } = await pool.query(consulta, [id_usuario, id_viaje, valoracion, descripcion]);
         return rows[0];
     } catch (error) {
-        console.error("❌ Error al agregar reseña:", error);
+        console.error(" Error al agregar reseña:", error);
         throw new Error("Error interno del servidor");
     }
 }
@@ -81,10 +81,10 @@ async function deleteResena (idResena, idUsuario)  {
       const { rows } = await pool.query(consulta, [idResena, idUsuario]);
   
       if (rows.length === 0) {
-        return null; // Si no se eliminó nada, significa que la reseña no existe o no pertenece al usuario
+        return null; 
       }
   
-      return rows[0]; // Retorna la reseña eliminada
+      return rows[0]; 
     } catch (error) {
       console.error("❌ Error en deleteResena:", error.message);
       throw error;

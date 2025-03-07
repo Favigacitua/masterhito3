@@ -7,11 +7,11 @@ function authMiddleware(req, res, next) {
     return res.status(403).json({ error: "Token no proporcionado" });
   }
 
-  const token = authHeader.split(" ")[1]; // 🔥 Extrae el token después de "Bearer"
+  const token = authHeader.split(" ")[1]; 
   
   try {
     const decoded = jwt.verify(token, secretKey);
-    req.user = decoded; // Guarda la info del usuario autenticado en `req.user`
+    req.user = decoded; 
     next();
   } catch (error) {
     return res.status(403).json({ error: "Token inválido" });

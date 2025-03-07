@@ -18,7 +18,7 @@ describe('POST /api/mis_resenas', () => {
         const viajeResult = await pool.query("SELECT id FROM viajes LIMIT 1");
 
         if (viajeResult.rows.length === 0) {
-            throw new Error("❌ No hay viajes en la BD. Agrega uno antes de correr el test.");
+            throw new Error(" No hay viajes en la BD. Agrega uno antes de correr el test.");
         }
 
         viajeId = viajeResult.rows[0].id;
@@ -41,7 +41,7 @@ describe('POST /api/mis_resenas', () => {
         token = jwt.sign({ id: userId, email: userEmail }, secretKey, { expiresIn: "1h" });
 
         if (!token) {
-            throw new Error("❌ No se pudo obtener un token válido.");
+            throw new Error("No se pudo obtener un token válido.");
         }
     });
 
@@ -49,7 +49,7 @@ describe('POST /api/mis_resenas', () => {
         console.log("🧹 Eliminando reseña creada en la prueba...");
         if (resenaId) {
             await pool.query("DELETE FROM mis_resenas WHERE id = $1", [resenaId]);
-            console.log("✅ Reseña eliminada.");
+            console.log(" Reseña eliminada.");
         }
     });
 
@@ -58,7 +58,7 @@ describe('POST /api/mis_resenas', () => {
             .post('/api/mis_resenas')
             .set('Authorization', `Bearer ${token}`)
             .send({
-                id_viaje: viajeId, // 🔥 No enviamos id_usuario, lo toma del token
+                id_viaje: viajeId,
                 valoracion: 5,
                 descripcion: "Excelente viaje, recomendado!"
             });
@@ -72,7 +72,7 @@ describe('POST /api/mis_resenas', () => {
         expect(res.body.resena).toHaveProperty('valoracion', 5);
         expect(res.body.resena).toHaveProperty('descripcion', "Excelente viaje, recomendado!");
 
-        // 🔥 Guardar el ID de la reseña para eliminarla después
+        
         resenaId = res.body.resena.id;
     });
 

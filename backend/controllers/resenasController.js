@@ -51,7 +51,7 @@ const getMisResenasController = async (req, res)=>{
             return res.status(401).json({ error: "Token inválido o expirado" });
         }
 
-        const resenas = await getMisResenas(id_usuario); // 🔥 Ahora pasamos el id_usuario, no el token
+        const resenas = await getMisResenas(id_usuario); 
 
         res.json({ resenas });
 
@@ -103,8 +103,8 @@ const postResenasController = async (req, res) => {
 
 const deleteResenaController = async (req, res) => {
     try {
-      const { id } = req.params; // ID de la reseña
-      const idUsuario = req.user.id; // Se obtiene del token del usuario autenticado
+      const { id } = req.params; 
+      const idUsuario = req.user.id; 
   
       const resenaEliminada = await deleteResena(id, idUsuario);
   

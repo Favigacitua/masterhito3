@@ -9,20 +9,20 @@ export const CardReseña = ({ viajeId }) => {
   const [resenasViaje, setResenasViaje] = useState([]);
 
   useEffect(() => {
-    console.log(`🛠️ CardReseña recibida con viajeId:`, viajeId);
+    console.log(` CardReseña recibida con viajeId:`, viajeId);
 
     if (!viajeId) { 
-      console.warn("⚠️ No se recibió un viajeId en CardReseña.");
+      console.warn(" No se recibió un viajeId en CardReseña.");
       return;
     }
 
     if (!resenas || typeof resenas !== "object") {
-      console.warn("⚠️ resenas no está definido o no es un objeto, no se puede acceder.");
+      console.warn(" resenas no está definido o no es un objeto, no se puede acceder.");
       return;
     }
 
     if (!resenas[viajeId]) {
-      console.log(`🔍 Buscando reseñas en: http://localhost:3000/api/resenas/viaje/${viajeId}`);
+      console.log(` Buscando reseñas en: http://localhost:3000/api/resenas/viaje/${viajeId}`);
       fetchResenasPorViaje(viajeId);
     }
 }, [viajeId, fetchResenasPorViaje, resenas]);
@@ -31,12 +31,12 @@ export const CardReseña = ({ viajeId }) => {
 
 useEffect(() => {
   if (!viajeId || !resenas || typeof resenas !== "object") {
-    console.warn("⚠️ No se pueden cargar las reseñas porque resenas o viajeId no están definidos.");
+    console.warn(" No se pueden cargar las reseñas porque resenas o viajeId no están definidos.");
     return;
   }
 
   if (resenas[viajeId]) {
-    console.log("📌 Nuevas reseñas detectadas:", resenas[viajeId]);
+    console.log(" Nuevas reseñas detectadas:", resenas[viajeId]);
     setResenasViaje(resenas[viajeId]); 
   }
 }, [resenas, viajeId]);
@@ -50,14 +50,14 @@ if (!resenasViaje || resenasViaje.length === 0) {
   return (
     <div className="reseñas-container">
       {resenasViaje.length > 0 ? (
-        resenasViaje.map((resena, index) => (  // 🔥 CAMBIAMOS `review` por `resena`
+        resenasViaje.map((resena, index) => (  
             <Card className="reseñas" key={index}>
                 <Card.Body>
-                    <Card.Title>({resena.valoracion} estrellas)</Card.Title>  {/* 🔥 resena.valoracion en vez de review.valoracion */}
+                    <Card.Title>({resena.valoracion} estrellas)</Card.Title> 
                     <Card.Subtitle className="mb-2 text-muted" style={{ fontWeight: "bold" }}>
-                        @{resena.nombre} {resena.apellido}  {/* 🔥 resena.nombre y resena.apellido */}
+                        @{resena.nombre} {resena.apellido}  
                     </Card.Subtitle>
-                    <Card.Text>{resena.descripcion}</Card.Text>  {/* 🔥 resena.descripcion */}
+                    <Card.Text>{resena.descripcion}</Card.Text>  
                 </Card.Body>
             </Card>
         ))

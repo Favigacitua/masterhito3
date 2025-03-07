@@ -1,5 +1,9 @@
+
+
 .footer {
     width: 100vw;
+    height: auto;
+    padding: auto;
     
     background-color: white;
     margin: 0%;
@@ -12,13 +16,15 @@
 }
 
 .nautilus img {
-    width: 14rem;
+    max-width: 14rem;
 }
 .contenido {
     background-color: white;
     width: 100vw;
-    padding: 2rem;
-    gap: 5rem;
+    padding: auto;
+    padding-left: 1rem;
+    gap: 2rem;
+    margin: auto;
 
 }
 

@@ -9,7 +9,8 @@ function CardViaje({ viaje }) {
   console.log("📌 Viaje recibido en CardViaje:", viaje)
 
   return (
-    <Card className='cardviaje' style={{ width: '18rem', minWidth: '18rem' }}>
+    <div className='carddestino'>
+    <Card className='cardviaje' style={{ maxWidth:"18rem", maxHeight:"500px" }}>
       <Card.Img variant="top"   src={viaje.imagen}  alt={viaje.nombre} />
       <Card.Body>
         <Card.Title >{viaje.nombre}</Card.Title>
@@ -22,6 +23,7 @@ function CardViaje({ viaje }) {
 Ver más información</Card.Link>
       </div>
     </Card>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import pool from './config/dbConnection.js'; // Ajusta la ruta según tu proyecto
+import pool from './config/dbConnection.js'; 
 import bcrypt from 'bcrypt';
 
 const usuarios = [
@@ -30,7 +30,7 @@ async function crearUsuarios() {
   } catch (error) {
     console.error("❌ Error al crear los usuarios:", error);
   } finally {
-    pool.end(); // Cierra la conexión a la BD
+    pool.end(); 
   }
 }
 

@@ -15,7 +15,7 @@ const schemaValidator = (schema) => {
       });
     }
     
-    next(); // ✅ Si no hay errores, continúa con el controlador
+    next(); 
   };
 };
 

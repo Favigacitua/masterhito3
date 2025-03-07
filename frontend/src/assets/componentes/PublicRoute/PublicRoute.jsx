@@ -6,12 +6,12 @@ const PublicRoute = ({ children }) => {
   const { token } = useUserContext();
   const location = useLocation();  
 
-  // 🔴 Si el usuario está autenticado y está en login o register, lo redirige a /perfil
+  
   if (token && (location.pathname === "/login" || location.pathname === "/register")) {
     return <Navigate to="/perfil" />;
   }
 
-  return children;  // 🔹 Renderiza los componentes hijos correctamente
+  return children;
 };
 
 export default PublicRoute;

@@ -16,20 +16,21 @@ const Favoritos = () => {
     fetchUserFavoritos();
   }, []);
 
-  console.log("📌 Favoritos obtenidos:", favoritos); // 🔍 Verificar qué se recibe
+  console.log(" Favoritos obtenidos:", favoritos); 
 
   if (!favoritos) {
-    return <p>Cargando favoritos...</p>; // ✅ Evita error si `favoritos` es undefined
+    return <p>Cargando favoritos...</p>; 
   }
 
   if (!Array.isArray(favoritos)) {
-    console.warn("⚠️ `favoritos` no es un array, inicializándolo como vacío.");
+    console.warn(" `favoritos` no es un array, inicializándolo como vacío.");
     return <p>Cargando favoritos...</p>;
   }
 
   return (
-    <div>
-      <Container className="mt-4">
+    <div className="misfavoritos">
+      <div >
+      
         <p
           style={{
             fontWeight: "bold",
@@ -46,10 +47,10 @@ const Favoritos = () => {
         </h2>
         <br />
         {favoritos.length > 0 ? (
-          <Row>
+          <Row className="cardcontainer">
             {favoritos.map((viaje) => (
-              <Col key={`${user.id}-${viaje.id_viaje}`} md={4} className="mb-3">
-                <Card className="cardviaje" style={{ width: "18rem" }}>
+              <Col key={`${user.id}-${viaje.id_viaje}`}  xs={12} sm={6} md={4} lg={2} style={{minWidth:"18rem", paddingBottom:"2rem"}} >
+                <Card className="cardviaje">
                   <Card.Img
                     variant="top"
                     src={viaje.imagen}
@@ -62,7 +63,7 @@ const Favoritos = () => {
                     <p>
                       <strong>Precio por persona:</strong> ${viaje.precio}
                     </p>
-                    {/* ✅ Botón para eliminar de favoritos */}
+                    
                   </Card.Body>
                   <div className="linkdestino" style={{ display:"flex", justifyContent:"space-between", alignItems:"center",margin:"0.5rem"}}>
                     <button
@@ -77,10 +78,10 @@ const Favoritos = () => {
                       onClick={(e) => {
                         e.stopPropagation();
                         console.log(
-                          "🔴 Clic detectado en el botón de eliminar"
-                        ); // 🔍 Esto debería aparecer en la consola
+                          " Clic detectado en el botón de eliminar"
+                        ); 
                         console.log(
-                          "🗑 Eliminando favorito con ID:",
+                          " Eliminando favorito con ID:",
                           viaje.id_viaje
                         );
                         removeFavoritos(viaje.id_viaje);
@@ -99,8 +100,7 @@ const Favoritos = () => {
         ) : (
           <p>No tienes viajes favoritos aún :(</p>
         )}
-      </Container>
-
+     
       <div className="descargalaapp">
         <img className="imagen" src="/descargalaapp.png" alt="descargalaapp" />
       </div>
@@ -110,6 +110,7 @@ const Favoritos = () => {
           src="/ofertasalcorreo.png"
           alt="ofertasalcorreo"
         />
+      </div>
       </div>
     </div>
   );

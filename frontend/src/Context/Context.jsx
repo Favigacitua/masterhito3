@@ -19,20 +19,20 @@ export const Context = ({ children }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch("http://localhost:3000/api/viajes");  // 🔹 QUITADO "/" extra en la URL
+        const response = await fetch("http://localhost:3000/api/viajes"); 
         const data = await response.json();
-        console.log("📌 Viajes cargados desde backend:", data);
+        console.log(" Viajes cargados desde backend:", data);
 
         if (Array.isArray(data)) {
           setViajes(data);
           setViajesOriginales(data);
-          console.log("✅ viajesOriginales cargados:", data);
+          console.log(" viajesOriginales cargados:", data);
         } else if (data.viajes && Array.isArray(data.viajes)) {
           setViajes(data.viajes); 
           setViajesOriginales(data.viajes);
-          console.log("✅ viajesOriginales cargados:", data.viajes);
+          console.log(" viajesOriginales cargados:", data.viajes);
         } else {
-          console.error("❌ Formato inesperado de viajes en la API:", data);
+          console.error(" Formato inesperado de viajes en la API:", data);
         }
       } catch (error) {
         console.error("Error al obtener los viajes:", error);
@@ -84,36 +84,36 @@ export const Context = ({ children }) => {
 
   
   const resetFiltros = () => {
-    console.log("🚨 Ejecutando resetFiltros()");
+    console.log(" Ejecutando resetFiltros()");
     setFiltroDestino(""); 
     setFiltroFecha(null); 
 
-    // 🔹 Verificamos si viajesOriginales es un array válido antes de intentar usarlo
+   
     if (!Array.isArray(viajesOriginales) || viajesOriginales.length === 0) {
-        console.warn("⚠ No hay datos en viajesOriginales, recargando desde API...");
+        console.warn(" No hay datos en viajesOriginales, recargando desde API...");
         
         fetch("http://localhost:3000/api/viajes")
             .then(response => response.json())
             .then(data => {
-                console.log("📌 Datos recargados desde API:", data);
+                console.log(" Datos recargados desde API:", data);
                 
                 if (Array.isArray(data)) {
                     setViajes(data);
-                    setViajesOriginales(data);  // 🔥 Asegurar que viajesOriginales se actualiza aquí también
+                    setViajesOriginales(data);  
                 } else if (data.viajes && Array.isArray(data.viajes)) {
                     setViajes(data.viajes);
                     setViajesOriginales(data.viajes);
                 } else {
-                    console.error("❌ Formato inesperado de viajes en la API:", data);
+                    console.error(" Formato inesperado de viajes en la API:", data);
                 }
             })
-            .catch(error => console.error("❌ Error al recuperar los viajes:", error));
+            .catch(error => console.error(" Error al recuperar los viajes:", error));
 
-        return;  // 🔹 Salimos para evitar que se intente restaurar una lista vacía
+        return; 
     }
 
     console.log("✅ Restaurando viajes desde viajesOriginales...");
-    setViajes([...viajesOriginales]);  // 🔹 Restauramos la lista completa de viajes
+    setViajes([...viajesOriginales]); 
 };
 
 
@@ -126,7 +126,7 @@ export const Context = ({ children }) => {
 
 
   useEffect(() => {
-    console.log("📌 Detectando cambio de ruta en Context:", location.pathname);
+    console.log(" Detectando cambio de ruta en Context:", location.pathname);
     if (location.pathname === "/destinos") {  
       console.log("✅ Ejecutando resetFiltros en Context...");
       resetFiltros()
@@ -158,13 +158,13 @@ export const Context = ({ children }) => {
   const fetchResenasPorViaje = async (viajeId) => {
     
     if (!viajeId) return;
-    console.warn("⚠️ No se recibió un viajeId en CardReseña.");
-    if (resenas[viajeId]) return; // 🔹 Evita hacer la misma petición varias veces
+    console.warn(" No se recibió un viajeId en CardReseña.");
+    if (resenas[viajeId]) return; 
 
-    console.log(`🔍 Buscando reseñas en: http://localhost:3000/api/resenas/viaje/${viajeId}`);
+    console.log(` Buscando reseñas en: http://localhost:3000/api/resenas/viaje/${viajeId}`);
 
     const apiUrl = `http://localhost:3000/api/resenas/viaje/${viajeId}`;
-    console.log(`🔍 Intentando obtener: ${apiUrl}`);
+    console.log(` Intentando obtener: ${apiUrl}`);
 
     try {
 

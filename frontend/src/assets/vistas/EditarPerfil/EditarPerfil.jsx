@@ -30,12 +30,12 @@ export const EditarPerfil = () => {
     e.preventDefault();
 
     if (!formData.password.trim()) {
-      alert("⚠️ Debes ingresar una contraseña para actualizar el perfil.");
+      alert(" Debes ingresar una contraseña para actualizar el perfil.");
       return;
     }
 
     if (formData.password !== formData.repetirPassword) {
-      alert(" ⚠️ Las contraseñas no coinciden");
+      alert("  Las contraseñas no coinciden");
       return;
     }
 
@@ -49,8 +49,8 @@ export const EditarPerfil = () => {
     }
 
     try {
-      console.log("🔑 Token enviado al backend:", token);
-      console.log("📌 Datos que se envían:", [...formDataToSend.entries()]);
+      console.log(" Token enviado al backend:", token);
+      console.log(" Datos que se envían:", [...formDataToSend.entries()]);
 
       const response = await fetch("http://localhost:3000/api/perfil", {
         method: "PUT",
@@ -62,17 +62,17 @@ export const EditarPerfil = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("❌ Error en la respuesta del backend:", errorData);
+        console.error(" Error en la respuesta del backend:", errorData);
         throw new Error(errorData.message || "Error al actualizar el perfil");
       }
 
     
 
-      const data = await response.json();  // 🔹 Capturamos la respuesta completa
-      console.log("📌 Respuesta del backend:", data);
+      const data = await response.json();  
+      console.log(" Respuesta del backend:", data);
 
       if (!data.user) {
-        throw new Error("❌ La respuesta del backend no contiene `user`");
+        throw new Error(" La respuesta del backend no contiene `user`");
       }
   
 
@@ -80,14 +80,14 @@ export const EditarPerfil = () => {
         throw new Error("Error al actualizar el perfil");
       }
 
-      console.log("📌 Antes de setUser:", user);
+      console.log(" Antes de setUser:", user);
 
       setUser((prevUser) => ({
         ...prevUser,
         ...data.user
       }));
 
-      console.log("📌 Después de setUser:", user);
+      console.log(" Después de setUser:", user);
 
       await fetchUserProfile();  
 

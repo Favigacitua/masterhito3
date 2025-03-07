@@ -17,6 +17,7 @@ import "./footer.css";
 
 export const Footer = () => {
   return (
+    
     <div className="footer">
       <hr style={{ border: "1px solid gray" }} />
       <div className="contenido">
@@ -24,7 +25,7 @@ export const Footer = () => {
           <h5 style={{ paddingBottom: "1rem" }}>
             Visitanos en nuestras redes sociales
           </h5>
-          <div className="iconos">
+          <div className="iconos" >
             <span className="icono">
               <FontAwesomeIcon
                 icon={faFacebookF}
@@ -166,5 +167,6 @@ export const Footer = () => {
         </p>
       </div>
     </div>
+    
   );
 };

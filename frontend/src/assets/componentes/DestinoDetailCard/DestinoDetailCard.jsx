@@ -16,16 +16,16 @@ export const DestinoDetailCard = () => {
 
 
   useEffect(() => {
-    console.log("🔍 Buscando viaje con ID:", id);
-    console.log("📌 Lista de viajes disponibles:", viajes);
+    console.log(" Buscando viaje con ID:", id);
+    console.log(" Lista de viajes disponibles:", viajes);
 
     if (viajes.length > 0) {
       const selectedViaje = viajes.find((v) => v.id === Number(id));
       if (selectedViaje) {
-        console.log("✅ Viaje encontrado:", selectedViaje);
+        console.log(" Viaje encontrado:", selectedViaje);
         setViaje(selectedViaje);
       } else {
-        console.log("⚠️ No se encontró un viaje con ese ID.");
+        console.log(" No se encontró un viaje con ese ID.");
       }
     }
   }, [id, viajes]);
@@ -35,8 +35,8 @@ export const DestinoDetailCard = () => {
   }
 
   const handleAddToFavorites = () => {
-    if (!user) {  // 🔹 Si el usuario NO ha iniciado sesión
-      setMensajeFavorito("⚠️ Debes iniciar sesión para añadir favoritos.");
+    if (!user) { 
+      setMensajeFavorito(" Debes iniciar sesión para añadir favoritos.");
       setTimeout(() => setMensajeFavorito(""), 3000);
       return;
     }
@@ -104,7 +104,7 @@ export const DestinoDetailCard = () => {
         {mensajeFavorito && (
           <p
             style={{
-              color: user ? "green" : "red", // 🔹 Verde si está logueado, rojo si no
+              color: user ? "green" : "red", 
               fontWeight: "bold",
               margin: "10px 0",
             }}

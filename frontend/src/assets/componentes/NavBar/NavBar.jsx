@@ -25,7 +25,7 @@ export const NavBar = () => {
 
   return (
     <>
-      <Navbar expand="md" className="navbar-custom mb-3">
+      <Navbar expand="md" className="navbar-custom mb-3" style={{width:"100vw"}}>
         <Container
           fluid
           style={{
