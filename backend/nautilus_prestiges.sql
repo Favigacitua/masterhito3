@@ -32,7 +32,7 @@ CREATE TABLE mis_resenas (
     id SERIAL PRIMARY KEY,
     id_usuario INT NOT NULL,
     id_viaje INT NOT NULL,
-    valoracion INT CHECK (valoracion BETWEEN 1 AND 5), -- Valor entre 1 y 5
+    valoracion INT CHECK (valoracion BETWEEN 1 AND 5), 
     descripcion TEXT,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE,
     FOREIGN KEY (id_viaje) REFERENCES viajes(id) ON DELETE CASCADE
@@ -40,9 +40,9 @@ CREATE TABLE mis_resenas (
 
 CREATE TABLE resenas (
     id SERIAL PRIMARY KEY,
-    id_usuario INT NOT NULL, -- 🔥 Se cambia "nombre" y "apellido" por "id_usuario"
+    id_usuario INT NOT NULL, 
     id_viaje INT NOT NULL,
-    valoracion INT CHECK (valoracion BETWEEN 1 AND 5), -- Valor entre 1 y 5
+    valoracion INT CHECK (valoracion BETWEEN 1 AND 5), 
     descripcion TEXT NOT NULL,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id) ON DELETE CASCADE,
     FOREIGN KEY (id_viaje) REFERENCES viajes(id) ON DELETE CASCADE
